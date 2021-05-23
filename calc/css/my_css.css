@@ -1,0 +1,404 @@
+* {
+    position: relative;
+    box-sizing: border-box;
+}
+
+#container>.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.L1_block {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin: 0 0 10px 0;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+
+.L1_block>.title_block {
+    width: 100%;
+    margin: 10px 10px;
+}
+
+.L1_block>.footer {
+    width: 100%;
+    margin: 10px 10px;
+    display: inline-flex;
+    flex-direction: row-reverse;
+}
+
+.L1_block>.title_block>* {
+    display: inline-block;
+    margin: 5px 10px;
+}
+
+.L1_block>.title_block>*:first-child {
+    margin-left: 0px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.material_list {
+    margin: 10px 10px;
+}
+
+.material_list>.title {
+    font-weight: bold;
+}
+
+.material_list>.material_item {
+    margin: 5px;
+}
+
+.material_list>.material_item>.text {
+    display: inline-block;
+    width: 80px;
+}
+
+.material_list>.material_item>.value {
+    width: 120px;
+    text-align: right;
+}
+
+#compare_area>.compare {
+    margin: 4px 10px;
+    padding: 5px;
+    width: 100%;
+    /* flex: 1 100%; */
+    box-sizing: border-box;
+    border: 4px solid #A0BC6D;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+}
+
+.compare .title_block {
+    margin: 5px;
+    padding: 5px 0;
+    /* display: inline-block; */
+    width: 100%;
+    display: inline-flex;
+    /* display: block; */
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: sticky;
+    left: 5px;
+}
+
+.compare .title_block>* {
+    flex: none;
+    margin: 5px 10px;
+}
+
+.compare .title_block>.title {
+    display: inline-block;
+    /* margin: 5px 10px 5px 0; */
+    font-weight: bold;
+    font-size: 20px;
+    min-width: 100px;
+    max-width: 200px;
+    /* height: 23px; */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.compare .title_block>.blank::before{
+    /* font-weight: bold; */
+    font-size: 20px;
+    content: "\00a0";
+}
+.compare .title_block>.title:focus{
+    text-overflow: initial;
+}
+.compare .title_block>*:not(.title):not(.blank) {
+    display: none;
+}
+
+.compare .title_block:hover>.title {
+    background-color: rgb(241, 212, 175);
+}
+
+.compare .title_block:hover>*:not(.title) {
+    display: inline;
+}
+
+.compare .content_block {
+    /* border: 2px solid #729EA1; */
+    /* background-color: #729EA1; */
+    padding: 0px;
+    border-radius: 0px;
+    width: 100%;
+    /* overflow-x: auto; */
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.compare .content_block>* {
+    /* box-sizing: border-box; */
+    margin: 2px;
+}
+
+.compare .content_block .path_add {
+    border: 2px solid #729EA1;
+    /* background-color: #729EA1; */
+    padding: 4px;
+    border-radius: 4px;
+    width: 30%;
+    min-width: 250px;
+    max-width: 300px;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.compare .content_block>*>.title:first-child {
+    margin: 5px 10px 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.compare .path_add .text {
+    width: 30%;
+}
+
+.compare .path_add .input {
+    width: 70%;
+}
+
+.compare .path_add .grid_row {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    /* align-content: space-between; */
+}
+
+.compare .path_add .grid {
+    font-size: 12px;
+    padding: 2px;
+    width: 10px;
+    text-align: center;
+    border: 1px solid transparent;
+    flex: auto;
+}
+
+.compare .path_add>*, .compare .content_block .path_add .details>* {
+    width: 100%;
+    margin: 2px;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.compare .content_block .path_add .details {
+    margin: 0px;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.compare .content_block .path_add .details .grid_row:not(:first-child) {
+    margin: 0.5px 2px;
+}
+
+.compare>.content_block>.test_area {
+    border: 2px solid #729EA1;
+    /* background-color: #729EA1; */
+    padding: 4px;
+    border-radius: 4px;
+    width: 70%;
+    flex-grow: 1;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    /* this make inner test_result operate in my expected way */
+    min-width: 300px;
+    /* max-width: 300px; */
+    align-content: flex-start;
+}
+
+.test_result {
+    width: 100%;
+    display: inline-flex;
+    /* flex-direction: row; */
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-content: flex-start;
+}
+
+.test_result>*>* {
+    /* margin-left: 5px; */
+    padding-left: 5px;
+    margin-right: 5px;
+}
+
+
+.test_result>*:nth-child(4)>*:before {
+    content: "";
+    display: block;
+    border-bottom: 1px solid blue;
+}
+
+.test_result>*>*+* {
+    padding-left: 5px;
+    border-left: 1px solid black;
+}
+
+.test_result * {
+    flex-shrink: 0;
+    width: fit-content;
+    /* overflow-x: hidden; */
+    /* text-overflow: ellipsis; */
+}
+
+.test_area .test_num {
+    color: gray;
+    font-size: 10px;
+}
+
+.test_area .test_num::before {
+    content: " (test num : ";
+}
+
+.test_area .test_num::after {
+    content: ")";
+}
+
+input:checked+.item_kind.grid {
+    background-color: #93befd;
+    border: 1px solid #3f3f3f;
+}
+
+input:checked+.from.grid {
+    background-color: #aaaaaa;
+    border: 1px solid #3f3f3f;
+}
+
+input:checked+.auto.grid {
+    background-color: rgb(251, 255, 0);
+    border: 1px solid #919b04;
+}
+
+input:checked+.step.grid {
+    background-color: #EC9192;
+    border: 1px solid #9b042a;
+}
+
+.block, input:checked+.grid.from {
+    background-color: #DCE0E0;
+    border: 1px solid #000000;
+}
+
+.compare .path_add input:checked+.grid:not(.off) {
+    border: 1px solid #000000;
+}
+
+.normal_block, input:checked+.grid.N, .grid.title.N {
+    background-color: #DB6D89;
+}
+
+.high_block, input:checked+.grid.H, .grid.title.H {
+    background-color: #EC9192;
+}
+
+.highEx_block, input:checked+.grid.X, .grid.title.X {
+    background-color: #DDD299;
+}
+
+.protected_block, input:checked+.grid.P, .grid.title.P {
+    background-color: #A0BC6D;
+}
+
+.ticket_block, input:checked+.grid.T, .grid.title.T {
+    background-color: #729EA1;
+}
+
+/* sticky header */
+.test_result>*>:first-child {
+    /* background-color: #99CCAA; */
+    font-weight: bold;
+    background-color: #FFFFFF;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    /* https://stackoverflow.com/questions/28897089/z-index-on-borders */
+    /* outline: 12px solid red; */
+    /* https://stackoverflow.com/questions/29404093/css-outline-left-and-right */
+    /* box-shadow: -5px 0px 0px 0px black, 5px 0px 0px 0px black; */
+    margin-right: 0;
+    box-shadow: 2px 0px 0px 0px black;
+}
+
+/* hover column */
+
+.highlighted {
+    background-color: #348A75;
+}
+
+/* .result_row:hover, .result_row:hover>:first-child { */
+
+.test_result>*:hover, .test_result>*:hover>:first-child {
+    background: rgb(176, 206, 236);
+}
+
+.test_name_row>div>div {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    /* css - Absolute positioning ignoring padding of parent - Stack Overflow */
+    /* https://stackoverflow.com/questions/17115344/absolute-positioning-ignoring-padding-of-parent */
+    padding: inherit;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+/* .test_name_row > div > div:nth-child(2){ */
+
+.test_name_row>div>div:not(:first-child) {
+    padding: 0;
+    width: fit-content;
+    z-index: 1;
+    text-align: right;
+    top: -2px;
+    left: unset;
+    right: 0;
+    /* top: 50%;
+    transform: translateY(-50%); */
+    /* background-color: white; */
+}
+
+.test_name_row>div>div:nth-child(3) {
+    right: 15px;
+    font-weight: bold;
+    top: 1.4px;
+}
+
+.test_name_row>div>div:not(:first-child):hover {
+    color: red;
+}
+
+.hidden {
+    display: none;
+}
+
+.test_name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+}
+
+.test_name:focus {
+    text-overflow: initial;
+}
