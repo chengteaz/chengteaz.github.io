@@ -1,3 +1,8 @@
 title: 123
 description: 456
 theme: jekyll-theme-architect
+
+# Disabling the "View on GitHub" button?
+# https://github.com/pages-themes/cayman/issues/29
+github:
+  is_project_page: false
