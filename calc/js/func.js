@@ -12,9 +12,51 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
-function import_material_data() {
-    alert("import_material_data");
+
+
+function import_file(import_type) {
+    // alert("import_material_data");
     // openFile("file:///C:/Users/ken/Downloads/Material info[2020-03-20].txt");
+
+    // 生活記事簿: 使用FileReader讀取file資料 - javascript
+    // http://hklifenote.blogspot.com/2016/08/filereaderfile-javascript.html
+    let input=document.createElement("input");
+    input.type="file";
+    input.style.display="none";
+    document.body.appendChild(input);
+
+    //監控#fileUploader的值變化
+    input.addEventListener("change", function(event) {
+        if (this.files.length > 0) {
+            //有選取file時，使用fileReader讀取file資料
+            //readAsDataURL可以將讀取到的file資料轉成
+            //data:......的URL型式
+            if(import_type=="material_only"){
+                upload(this.files, {id:"material_only"});
+            }else if(import_type=="page"){
+                upload(this.files, {});
+            }else if(import_type=="compare_area"){
+                upload(this.files, {id:"compare_area_only"});
+            }else if(import_type.indexOf("compare_")>=0){
+                let target_id=import_type;
+                target_id+="_only";
+                // let target=document.getElementById(target_id);
+                upload(this.files, {id:target_id});
+            }else{
+                operation_cb({value:"unknow import type"});
+            }
+        }else{
+            //沒有選取file時，例如選擇取消，
+        }
+        input.parentElement.removeChild(input);
+    }, false);
+    
+
+    input.click();
+}
+function import_material_data(){
+    // alert("import_material_data");
+    import_file("material_only")
 }
 function upload(files, target) {
     // alert('Upload ' + files.length + ' File(s).');
@@ -35,7 +77,12 @@ function upload(files, target) {
     // console.log(files[0]);
 
     function import_process(data_in_object, target) {
+        // console.log(target);
         let data = data_in_object;
+        if(data.dataType != "composite" && target.id.indexOf("_only")>=0){
+            target.id=target.id.slice(0, target.id.indexOf("_only"));
+        }
+
         if (data.dataType == "material") {
             if (target.id == "material" || target.id == "composite") {
                 A = data.A;
@@ -44,9 +91,12 @@ function upload(files, target) {
                 TA = data.TA;
                 TB = data.TB;
 
-                apply_material_data()
+
+                apply_material_data();
                 operation_cb({ value: `import file(${files[0].name}) & apply` });
             } else {
+                console.log("Ignore, import file's format is not accept.");
+                operation_cb({ value: `import file(${files[0].name}) fails, please drop me into Material block.` });
                 // operation_cb({ value: `import file(${files[0].name}) fails(data type error)` });
             }
         } else if (data.dataType == "compare") {
@@ -56,19 +106,36 @@ function upload(files, target) {
                 }
             } else if ((target.id.indexOf("compare_") >= 0)) {
                 for (let compare of data.compare_data) {
-                    import_compare(compare, compares[target.rand]);
+                    import_compare(compare, compares[document.getElementById(target.id).rand]);
                 }
             } else {
                 console.log("Ignore, import file's format is not accept.");
+                console.log(target.id);
+                operation_cb({ value: `import file(${files[0].name}) fails, please drop me into compare_area or inner-compare.` });
             }
         } else if (data.dataType == "composite") {
-            clear_compare();
-            // maybe can optional import for each element in data.array, but now excute as "clear page and import all element sequencely".
-            for(let element of data.array){
-                import_process(element, {id:"composite"});
+            if(target.id=="material_only"){
+                for (let element of data.array) {
+                    if(element.dataType=="material"){
+                        import_process(element, target);
+                    }
+                }
+            }else if(target.id.indexOf("compare_")>=0 && target.id.indexOf("_only")>=0){
+                for (let element of data.array) {
+                    if(element.dataType=="compare"){
+                        import_process(element, target);
+                    }
+                }
+            }else{
+                clear_compare();
+                // maybe can optional import for each element in data.array, but now excute as "clear page and import all element sequencely".
+                for (let element of data.array) {
+                    import_process(element, { id: "composite" });
+                }
             }
         } else {
             console.log("Ignore, import file's format is not accept.");
+            operation_cb({ value: `import file(${files[0].name}) fails, unknow format.` });
         }
     }
 }
@@ -88,6 +155,10 @@ function export_material_data(just_return_content) {
         let content = JSON.stringify(material_data, null, 4);
         download(filename, content);
     }
+}
+
+function import_page() {
+    import_file("page");
 }
 
 function export_page() {
@@ -136,31 +207,38 @@ function p_point_set() {
         let p = input_calc(prompt("p_point_set"));
         console.log(p);
         if (isNaN(p) == false) {
-            A[1] = 5.5 * p;
-            A[2] = 7 * p;
-            B[1] = 6 * p;
-            B[2] = 7 * p;
-            C[0] = 29 * p;
+            back_up();
+            apply_material_data({ value: "middle operation" }, true);
+            A[1] = Math.round(5.5 * p * 100) / 100;
+            A[2] = Math.round(7 * p * 100) / 100;
+            B[1] = Math.round(6 * p * 100) / 100;
+            B[2] = Math.round(7 * p * 100) / 100;
+            C[0] = Math.round(29 * p * 100) / 100;
+            fill_material_data(undefined, true);
+            recover();
         }
-        fill_material_data();
     } catch (err) {
         console.log(err);
         alert("setting fails");
     }
 }
 
-function clear_material_data() {
-    alert("clear_material_data");
+function clear_material_data(ev) {
+    // alert("clear_material_data");
     var values = document.querySelectorAll(".material_list .value");
     for (var temp of values) {
         temp.value = "";
     }
+    operation_cb(ev);
 }
-function fill_material_data(ev) {
+function fill_material_data(ev, not_checking) {
     // alert("default_material_data");
     rebind_material_data();
-    fix_material_data();
+    if(not_checking != true){
+        fix_material_data();
+    }
     var lists = document.querySelectorAll(".material_list");
+
     for (var temp of lists) {
         let offset = 0;
         if (temp.id == "TA" || temp.id == "TB") {
@@ -170,10 +248,9 @@ function fill_material_data(ev) {
         var data = material_data_map.get(temp.id);
         var inputs = temp.querySelectorAll("input");
         for (var i = 0; i < inputs.length; i++) {
-            // console.log(inputs[i]);
             if (data[i + offset] != undefined) {
                 var value = "" + data[i + offset];
-                var value = value.indexOf(".") < 0 ? value : value.slice(0, value.indexOf(".") + 3);
+                // var value = value.indexOf(".") < 0 ? value : value.slice(0, value.indexOf(".") + 3);
                 inputs[i].value = value;
             } else {
                 var value = "";
@@ -181,8 +258,10 @@ function fill_material_data(ev) {
             }
         }
     }
-    tip_material_data();
-    operation_cb(ev);
+    if (not_checking == undefined) {
+        tip_material_data();
+        operation_cb(ev);
+    }
 }
 function rebind_material_data() {
     material_data_map.set("A", A);
@@ -190,6 +269,13 @@ function rebind_material_data() {
     material_data_map.set("C", C);
     material_data_map.set("TA", TA);
     material_data_map.set("TB", TB);
+    for (let [key, value] of material_data_map.entries()) {
+        if(material_data_map_skip_workaround.get(key)==undefined){
+            let temp = [...value];
+            memset(temp, NaN, temp.length);
+            material_data_map_skip_workaround.set(key, temp);
+        }
+    }
 }
 
 function fix_material_data() {
@@ -240,10 +326,43 @@ function tip_material_data() {
         }
     }
 }
+// How do I empty an array in JavaScript? - Stack Overflow
+// https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+function back_up() {
+    for (let key of material_data_map_skip_workaround.keys()) {
+        let A = material_data_map.get(key);
+        let B = material_data_map_skip_workaround.get(key);
+        let temp = A.slice();
+        B.splice(0, B.length, ...temp);
+    }
+}
+function recover() {
+    for (let key of material_data_map_skip_workaround.keys()) {
+        let A = material_data_map.get(key);
+        let B = material_data_map_skip_workaround.get(key);
+        let temp = B.slice();
+        A.splice(0, A.length, ...temp);
+    }
+}
+// javascript - How to get hex color value rather than RGB value? - Stack Overflow
+// https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+function check_meterial_data_valid_otherwise_swap_to_workaround_data() {
+    let skip_flag = false;
+    const rgb2hex = (rgb) => `#${rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`
+    for (let temp of document.querySelectorAll("#material .material_list input")) {
+        if (temp.style.backgroundColor != "") {
+            if (rgb2hex(temp.style.backgroundColor) == "#EC9192".toLowerCase()) {
+                skip_flag = true;
+                break;
+            }
+        }
+    }
+    return skip_flag;
+}
 
-function apply_material_data(ev) {
+function apply_material_data(ev, not_checking) {
     // alert("apply_material_data");
-
+    back_up();
     for (let key of material_list_map.keys()) {
         let offset = 0;
         if (key == "TA" || key == "TB") {
@@ -252,12 +371,20 @@ function apply_material_data(ev) {
         let inputs = document.querySelectorAll(`#${key} input`);
         inputs.forEach(function (input, index) {
             let value;
-            try {
-                value = input_calc(input.value);
-            } catch (err) {
-                console.log(err);
-                value = undefined;
+            if (not_checking != undefined) {
+                value = input.value;
+                if (input.value == "") {
+                    value = undefined;
+                }
+            } else {
+                try {
+                    value = input_calc(input.value);
+                } catch (err) {
+                    console.log(err);
+                    value = undefined;
+                }
             }
+
             material_data_map.get(key)[index + offset] = value;
             // if (input.value == "") {
             //     material_data_map.get(key)[index + offset] = undefined;
@@ -266,8 +393,17 @@ function apply_material_data(ev) {
             // }
         });
     }
-    fill_material_data();
-    operation_cb(ev);
+    if (not_checking == undefined) {
+        fill_material_data();
+        if (check_meterial_data_valid_otherwise_swap_to_workaround_data() == false) {
+            operation_cb(ev);
+        } else {
+            operation_cb({ value: "apply fail, miss some necessary data" });
+            recover();
+        }
+    } else {
+        fill_material_data(undefined, true);
+    }
 }
 
 function refresh_all(ev) {
@@ -275,6 +411,11 @@ function refresh_all(ev) {
         temp.refresh_all_test();
     }
     operation_cb(ev);
+    if (check_meterial_data_valid_otherwise_swap_to_workaround_data() == false) {
+        operation_cb(ev);
+    } else {
+        operation_cb({ value: "apply fail, miss some necessary data" });
+    }
 }
 function operation_cb(ev) {
     if (ev) {
@@ -314,7 +455,7 @@ function new_compare(insertAtIndex) {
     var temp = document.createElement("input");
     temp.type = "button";
     temp.value = "edit";
-    temp.setAttribute("onclick", "edit_compare()");
+    temp.setAttribute("onclick", "edit_compare(this)");
     title_div.appendChild(temp);
 
     var temp = document.createElement("input");
@@ -331,15 +472,15 @@ function new_compare(insertAtIndex) {
 
     var temp = document.createElement("input");
     temp.type = "button";
-    temp.value = "import(append)";
-    temp.setAttribute("onclick", "append_compare()");
+    temp.value = "import(Test)";
+    temp.setAttribute("onclick", "append_compare(this)");
     title_div.appendChild(temp);
 
-    var temp = document.createElement("input");
-    temp.type = "button";
-    temp.value = "export";
-    temp.setAttribute("onclick", "export_compare(this)");
-    title_div.appendChild(temp);
+    // var temp = document.createElement("input");
+    // temp.type = "button";
+    // temp.value = "export";
+    // temp.setAttribute("onclick", "export_compare(this)");
+    // title_div.appendChild(temp);
 
     var temp = document.createElement("input");
     temp.type = "button";
@@ -359,7 +500,7 @@ function new_compare(insertAtIndex) {
     // temp.classList.add("title_block");
     var text = document.createElement("div");
     text.classList.add("title");
-    text.textContent = "Add/Edit Test";
+    text.textContent = "Add Test";
     // temp.appendChild(text);
     path_add.appendChild(text);
     var temp = document.createElement("div");
@@ -428,6 +569,7 @@ function new_compare(insertAtIndex) {
     tab_link.textContent = "string";
     tab.appendChild(tab_link);
     var tab_link = document.createElement("button");
+    tab_link.style.display = "none";  // not implement, so hide
     tab_link.classList.add("tablinks");
     tab_link.setAttribute("onclick", "openTab(this)");
     tab_link.textContent = "UI";
@@ -675,10 +817,10 @@ function new_compare(insertAtIndex) {
 
 
 
-    if(insertAtIndex){
-        let before=$(".compare")[insertAtIndex];
+    if (insertAtIndex) {
+        let before = $(".compare")[insertAtIndex];
         document.getElementById("compare_area").insertBefore(compare, before);
-    }else{
+    } else {
         document.getElementById("compare_area").appendChild(compare);
     }
 
@@ -693,15 +835,18 @@ function grid_onclick() {
 }
 function import_compare(data, target_compare) {
     // alert("import_compare");
-    console.log("123");
+    // console.log("123");
+    if(data==undefined){
+        return;
+    }
 
     let compare = target_compare != undefined ? target_compare : new_compare();
-    if(data.compare_name){
-        compare.element.querySelector(".title").textContent=data.compare_name;
-        compare.element.querySelector(".title").title=data.compare_name;
+    if (data.compare_name) {
+        compare.element.querySelector(".title").textContent = data.compare_name;
+        compare.element.querySelector(".title").title = data.compare_name;
     }
-    if(data.tests){
-        data=data.tests;
+    if (data.tests) {
+        data = data.tests;
     }
     for (let test of data) {
         let estimate = new Estimate(test.item, test.level_start);
@@ -714,8 +859,10 @@ function import_compare(data, target_compare) {
         compare.addTest(new Test(estimate));
     }
 }
-function append_compare() {
-    alert("append_compare");
+function append_compare(ev) {
+    // alert("append_compare");
+    let target=ev.closest("[id^=compare]");
+    import_file(target.id);
 }
 function export_compare(ev, just_return_content) {
     // alert("export_compare");
@@ -742,7 +889,7 @@ function export_compare(ev, just_return_content) {
         }
         let compare_index = $(".compare").index(compare_object.element);
         // compares_data[compare_index] = (compare_inner);
-        compares_data[compare_index] = {compare_name:compare_object.element.querySelector(".title").textContent ,tests:compare_inner};
+        compares_data[compare_index] = { compare_name: compare_object.element.querySelector(".title").textContent, tests: compare_inner };
     }
 
     compares_data = compares_data.filter(function (data) {
@@ -778,14 +925,38 @@ function delete_compare(ev) {
     delete compares[compare.rand];
     // console.log(compares);
 }
-function edit_compare() {
-    alert("edit_compare");
+
+// javascript - How to select all text in contenteditable div? - Stack Overflow
+// https://stackoverflow.com/questions/12243898/how-to-select-all-text-in-contenteditable-div
+jQuery.fn.selectText = function () {
+    var doc = document;
+    var element = this[0];
+    console.log(this, element);
+    if (doc.body.createTextRange) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+    } else if (window.getSelection) {
+        var selection = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range)
+    }
+};
+
+function edit_compare(ev) {
+    let compare = ev.closest(".compare");
+    let title = compare.querySelector(".title");
+    title.contentEditable = true;
+    title.focus();
+    $(title).selectText();
 }
-function copy_compare(ev){
+function copy_compare(ev) {
     let compare = ev.closest(".compare");
     let compare_object = compares[compare.rand];
     let current_index = $(".compare").index(compare_object.element);
-    let temp = new_compare(current_index+1);
+    let temp = new_compare(current_index + 1);
     let compare_data = export_compare(ev, true).compare_data[0];
     import_compare(compare_data, temp);
 }
@@ -822,6 +993,11 @@ function addTest(button) {
                 if (opt == true) {
                     step = temp.nextSibling.value;
                     // console.log(`opt ${step}`);
+                    if(item_kind=="SA" || item_kind=="SB"){
+                        if(step>10){
+                            step=10;
+                        }
+                    }
                     estimate.findOptimalWay(step);
                 } else if (opt == false) {
                     step = temp.nextSibling.value;

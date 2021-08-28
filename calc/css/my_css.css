@@ -384,6 +384,13 @@ input:checked+.step.grid {
     top: 1.4px;
 }
 
+.test_name_row>div>div:nth-child(4) {
+    right: calc(15px*2.2);
+    font-weight: bold;
+    top: 1.4px;
+    font-size: 90%;
+}
+
 .test_name_row>div>div:not(:first-child):hover {
     color: red;
 }

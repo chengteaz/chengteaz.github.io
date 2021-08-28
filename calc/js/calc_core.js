@@ -77,45 +77,45 @@ class MagicEx {
     }
     // my("2434333324");
 
-    static fee_table(normalMagicFee=5, pollutedMagicFee=80){
-        let acc1=0, acc2=0;
-        let gap=15;
+    static fee_table(normalMagicFee = 5, pollutedMagicFee = 80) {
+        let acc1 = 0, acc2 = 0;
+        let gap = 15;
 
-        console.log({normalMagicFee, pollutedMagicFee});
-        console.log("".alignRight(10)+"once".alignRight(gap)+"one-end".alignRight(gap)+"acc".alignRight(gap)+"acc-fee".alignRight(gap));
-        let normalMagic=this.normalMagic;
-        let pollutedMagic=this.pollutedMagic
+        console.log({ normalMagicFee, pollutedMagicFee });
+        console.log("".alignRight(10) + "once".alignRight(gap) + "one-end".alignRight(gap) + "acc".alignRight(gap) + "acc-fee".alignRight(gap));
+        let normalMagic = this.normalMagic;
+        let pollutedMagic = this.pollutedMagic
 
-        for(let i=0;i<5;i++){
-            let mp=1-0.1*(i+1);
+        for (let i = 0; i < 5; i++) {
+            let mp = 1 - 0.1 * (i + 1);
             let once = `${normalMagic[i]}/${pollutedMagic[i]}`;
-            let one_end = `${(normalMagic[i]/mp).toFixed(2)}/${(pollutedMagic[i]/mp).toFixed(2)}`;
-            acc1+=normalMagic[i]/mp;
-            acc2+=pollutedMagic[i]/mp;
+            let one_end = `${(normalMagic[i] / mp).toFixed(2)}/${(pollutedMagic[i] / mp).toFixed(2)}`;
+            acc1 += normalMagic[i] / mp;
+            acc2 += pollutedMagic[i] / mp;
             let acc = `${acc1.toFixed(2)}/${acc2.toFixed(2)}`;
-            let acc_fee=`${(acc1*normalMagicFee + acc2*pollutedMagicFee).toFixed(2)}`;
-            console.log(`level ${i+1}`.alignLeft(10)+once.alignRight(gap)+one_end.alignRight(gap)+acc.alignRight(gap)+acc_fee.alignRight(gap));
+            let acc_fee = `${(acc1 * normalMagicFee + acc2 * pollutedMagicFee).toFixed(2)}`;
+            console.log(`level ${i + 1}`.alignLeft(10) + once.alignRight(gap) + one_end.alignRight(gap) + acc.alignRight(gap) + acc_fee.alignRight(gap));
         }
         console.log("-".repeat(40));
     }
 
-    static calc_costom_fee_new(array_or_str, normalMagicFee=5, pollutedMagicFee=80) {  // old
-        let array=[];
-        if(array_or_str instanceof Array){
-            array=array_or_str;
-        }else if(typeof(array_or_str) == "string"){
+    static calc_costom_fee_new(array_or_str, normalMagicFee = 5, pollutedMagicFee = 80) {  // old
+        let array = [];
+        if (array_or_str instanceof Array) {
+            array = array_or_str;
+        } else if (typeof (array_or_str) == "string") {
             // arrays - Call forEach on a string in JavaScript - Stack Overflow
             // https://stackoverflow.com/questions/57644418/call-foreach-on-a-string-in-javascript
-            [...array_or_str].forEach(function(value, index){
-                if(isNaN(parseInt(value))==false){
-                    array[index]=parseInt(value);
-                }else{
-                    array[index]=0;
+            [...array_or_str].forEach(function (value, index) {
+                if (isNaN(parseInt(value)) == false) {
+                    array[index] = parseInt(value);
+                } else {
+                    array[index] = 0;
                 }
             })
         }
         let sum = 0, normal_num = 0, polluted_num = 0;
-        for (let i = 0; i < array.length && i<=4; i++) {
+        for (let i = 0; i < array.length && i <= 4; i++) {
             // console.log(`A:${sum}`);
             sum += normalMagicFee * MagicEx.normalMagic[i] * array[i];
             normal_num += MagicEx.normalMagic[i] * array[i];
@@ -172,8 +172,9 @@ var TA = [0, 0, 0, 0, 0, 1500, 17000, 17000, 19000, , , , , ,];   //+5~+9 weapon
 var TB = [0, 0, 0, 0, 0, 3000, 45000, 45000, , , , , , ,]; //+5~+9 equipment ticket fee 
 
 var material_data_map = new Map();
+var material_data_map_skip_workaround = new Map();
 
-var smithNum = [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 4, 4];     // needed nim of smith blessing for trying certain upgrade
+var smithNum = [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4];     // needed nim of smith blessing for trying certain upgrade
 var whiteSmithRateInc = 10; //default use, (unsafe upgrade, normal) success rate +10%
 
 // success rate
@@ -261,7 +262,7 @@ class Estimate {
             }
 
             add_result(r2) {
-                let re = this.clone();;
+                let re = this.clone();
                 re.nItem += r2.nItem;
                 for (let i = 0; i < this.nMaterial.length; i++) {
                     re.nMaterial[i] += r2.nMaterial[i];
@@ -307,50 +308,51 @@ class Estimate {
 
                 return re;
             }
-        }
 
-        checkTotal(itemPrice, sort) {
-            return checkItemFee(itemPrice) + checkMFee(sort);
-        }
-
-        checkItemFee(itemPrice) {
-            return nItem * itemPrice;
-        }
-
-        checkMFee(sort) {
-            this.re = 0;
-            if (!strcmp(sort, "A3") || !strcmp(sort, "A4")) {
-                re += nMaterial[0] * A[0];
-                re += nMaterial[1] * A[1];
-                re += nMaterial[2] * A[2];
-                re += nMaterial[3] * A[3];
-                re += nBless[0] * C[0];
-                re += nBless[1] * C[1];
-                re += nBless[2] * C[3];
-                for (var i = 0; i < 21; i++) {
-                    if (nTicket[i] != 0) {
-                        re += nTicket[i] * TA[i];
+            checkTotal(itemPrice, sort) {
+                return this.checkItemFee(itemPrice) + this.checkMFee(sort);
+            }
+    
+            checkItemFee(itemPrice) {
+                return this.nItem * itemPrice;
+            }
+    
+            checkMFee(sort) {
+                let re = 0;
+                if (sort=="A3" || sort=="A4" || sort=="SA") {
+                    re += this.nMaterial[0] * A[0];
+                    re += this.nMaterial[1] * A[1];
+                    re += this.nMaterial[2] * A[2];
+                    re += this.nMaterial[3] * A[3];
+                    re += this.nBless[0] * C[0];
+                    re += this.nBless[1] * C[1];
+                    re += this.nBless[2] * C[3];
+                    for (let i = 0; i < 21; i++) {
+                        if (this.nTicket[i] != 0) {
+                            re += this.nTicket[i] * TA[i];
+                        }
                     }
                 }
-            }
-            else if (!strcmp(sort, "B")) {
-                re += nMaterial[0] * B[0];
-                re += nMaterial[1] * B[1];
-                re += nMaterial[2] * B[2];
-                re += nMaterial[3] * B[3];
-                re += nBless[0] * C[0];
-                re += nBless[1] * C[2];
-                re += nBless[2] * C[3];
-                for (var i = 0; i < 21; i++) {
-                    if (nTicket[i] != 0) {
-                        re += nTicket[i] * TB[i];
+                else if (sort=="B" || sort=="SB") {
+                    re += this.nMaterial[0] * B[0];
+                    re += this.nMaterial[1] * B[1];
+                    re += this.nMaterial[2] * B[2];
+                    re += this.nMaterial[3] * B[3];
+                    re += this.nBless[0] * C[0];
+                    re += this.nBless[1] * C[2];
+                    re += this.nBless[2] * C[3];
+                    for (let i = 0; i < 21; i++) {
+                        if (this.nTicket[i] != 0) {
+                            re += this.nTicket[i] * TB[i];
+                        }
                     }
+                } else {
+                    console.log("has wrong sort in checkMFee");
                 }
-            } else {
-                console.log("has wrong sort in checkMFee");
+                return re;
             }
-            return re;
         }
+
 
         constructor(step, once = false) {  //class Test
             this.step = step;
@@ -432,7 +434,7 @@ class Estimate {
         //process for checking pre stage exist or not. (should exist)
         let process = step.lastIndexOf(this.decimalToHexChar(this.level_start + 1));
         if (process >= 0) {
-            while (this.isKindOrNot(step[process]) == false) {
+            while (this.isKindOrNot(step[process]) == false && process>=0) { // avoid infinite loop
                 process--;
             }
 
@@ -539,9 +541,16 @@ class Estimate {
     }
 
     preProcessForSpecificConditionX(step, hstep, recursive = false) {
+        if(hstep==-1){
+            return;
+        }
+
         let level = this.hexCharToDecimal(step[hstep + recursive]);  // must >=8
 
         let kind = ['N', 'H', 'X', 'P'];
+        if (this.sort=="SA" || this.sort=="SB") {
+            kind.pop();
+        }
         let front, temp;
         let min = Number.MAX_VALUE;
         let re = [];    // store return step string
@@ -615,6 +624,13 @@ class Estimate {
                     oper = false;
                     tempT.level_end = level;
 
+                    // shadow sort
+                    if (this.sort == "SA" || this.sort == "SB") {
+                        if (level > 10) {
+                            continue;
+                        }
+                    }
+
                     let temp;
                     let tempExtend;  // extend version5_0
                     if (kind == 'T') {
@@ -663,6 +679,13 @@ class Estimate {
         let lastKind = 0;
 
         for (let i = level_start + 1; i <= goalLevel; i++) {
+
+            if (this.sort == "SA" || this.sort == "SB") {
+                if (i > 10) {
+                    break;
+                }
+            }
+
             let min = Number.MAX_VALUE;
             let level = i;
             let kind;
@@ -687,11 +710,13 @@ class Estimate {
             }
 
             if (i >= 7 && i <= 14) {
-                kind = 'P';
-                temp = this.operate(current, kind, level);
-                if (temp < min) {
-                    min = temp;
-                    finalKind = kind;
+                if (this.sort != "SA" && this.sort != "SB") {
+                    kind = 'P';
+                    temp = this.operate(current, kind, level);
+                    if (temp < min) {
+                        min = temp;
+                        finalKind = kind;
+                    }
                 }
             }
 
@@ -739,11 +764,13 @@ class Estimate {
             }
 
             if (i >= 5 && i <= 13 && this.mmOnce('T', level) != 0 && this.mmOnce('T', level) != undefined) {
-                kind = 'T';
-                temp = this.operate(tempT.result[level_start], kind, level);
-                if (temp < min) {
-                    min = temp;
-                    finalKind = kind;
+                if (this.sort != "SA" && this.sort != "SB") {
+                    kind = 'T';
+                    temp = this.operate(tempT.result[level_start], kind, level);
+                    if (temp < min) {
+                        min = temp;
+                        finalKind = kind;
+                    }
                 }
             }
 
@@ -770,7 +797,7 @@ class Estimate {
 
     mmOnce(kind, level = 0) {
         let sort = this.sort;
-        if (sort == "A3" || sort == "A4") {
+        if (sort == "A3" || sort == "A4" || sort == "SA") {
             switch (kind) {
                 case 'N': return A[0];
                 case 'H': return A[1];
@@ -791,14 +818,13 @@ class Estimate {
                                 return C[1];
                         }
                         else if (level == 13) {
-                            let min = A[3] + C[0] * smithNum[level - 1];
-                            min = min < C[1] ? min : C[1];
+                            let min = C[1];
                             min = min < A[3] + C[3] ? min : A[3] + C[3];
                             return min;
                         }
                         else {
                             console.log("has wrong kind in mmOnce");
-                            return 0;
+                            return NaN;
                         }
                     }
                     else if (level == 14) {
@@ -807,16 +833,16 @@ class Estimate {
                     else {
                         console.log("has wrong kind in mmOnce");
                     }
-                    return 0;
+                    return NaN;
                 case 'T': return TA[level];
                 case 'S': return level <= 10 ? A[2] : A[3];
                 case 'X': return level <= 10 ? A[2] : A[3];
                 default:
                     console.log("has wrong kind in mmOnce");
-                    return 0;
+                    return NaN;
             }
         }
-        else if (sort == "B") {
+        else if (sort == "B" || sort == "SB") {
             switch (kind) {
                 case 'N': return B[0];
                 case 'H': return B[1];
@@ -837,14 +863,13 @@ class Estimate {
                                 return C[2];
                         }
                         else if (level == 13) {
-                            let min = B[3] + C[0] * smithNum[level - 1];
-                            min = min < C[2] ? min : C[2];
+                            let min = C[2];
                             min = min < B[3] + C[3] ? min : B[3] + C[3];
                             return min;
                         }
                         else {
                             console.log("has wrong kind in mmOnce");
-                            return 0;
+                            return NaN;
                         }
                     }
                     else if (level == 14) {
@@ -853,24 +878,24 @@ class Estimate {
                     else {
                         console.log("has wrong kind in mmOnce");
                     }
-                    return 0;
+                    return NaN;
                 case 'T': return TB[level];
                 case 'S': return level <= 10 ? B[2] : B[3];
                 case 'X': return level <= 10 ? B[2] : B[3];
                 default:
                     console.log("has wrong kind in mmOnce");
-                    return 0;
+                    return NaN;
             }
         } else {
             console.log("has wrong sort in mmOnce");
-            return 0;
+            return NaN;
         }
     }
 
     mmOnceExtend(kind, level = 0) {
         let re = new Estimate.Test.Result();
         let sort = this.sort;
-        if (sort == "A3" || sort == "A4") {
+        if (sort == "A3" || sort == "A4" || sort == "SA") {
             switch (kind) {
                 case 'N': re.nMaterial[0]++; break;
                 case 'H': re.nMaterial[1]++; break;
@@ -904,24 +929,12 @@ class Estimate {
                         }
                         else if (level == 13) {
                             if (C[1] < A[3] + C[3]) {
-                                if (C[1] < A[3] + C[0] * smithNum[level - 1]) {
-                                    re.nBless[1]++;
-                                    break;
-                                } else if (C[1] >= A[3] + C[0] * smithNum[level - 1]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[0] += smithNum[level - 1];
-                                    break;
-                                }
+                                re.nBless[1]++;
+                                break;
                             } else if (C[1] >= A[3] + C[3]) {
-                                if (A[3] + C[3] < A[3] + C[0] * smithNum[level - 1]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[2]++;
-                                    break;
-                                } else if (A[3] + C[3] >= A[3] + C[0] * smithNum[level - 1]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[0] += smithNum[level - 1];
-                                    break;
-                                }
+                                re.nMaterial[3]++;
+                                re.nBless[2]++;
+                                break;
                             }
                         }
                     }
@@ -943,7 +956,7 @@ class Estimate {
             }
             return re;
         }
-        else if (sort == "B") {
+        else if (sort == "B" || sort == "SB") {
             switch (kind) {
                 case 'N': re.nMaterial[0]++; break;
                 case 'H': re.nMaterial[1]++; break;
@@ -977,24 +990,11 @@ class Estimate {
                         }
                         else if (level == 13) {
                             if (C[2] < B[3] + C[3]) {
-                                if (C[2] < B[3] + C[0] * smithNum[level - 1]) {
-                                    re.nBless[1]++;
-                                    break;
-                                } else if (C[2] >= B[3] + C[0] * smithNum[level - 1]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[0] += smithNum[level - 1];
-                                    break;
-                                }
+                                re.nBless[1]++;
+                                break;
                             } else if (C[2] >= B[3] + C[3]) {
-                                if (B[3] + C[3] < B[3] + C[0] * smithNum[level - 1]) {
                                     re.nMaterial[3]++;
                                     re.nBless[2]++;
-                                    break;
-                                } else if (B[3] + C[3] >= B[3] + C[0] * smithNum[level - 1]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[0] += smithNum[level - 1];
-                                    break;
-                                }
                             }
                         }
                     }
@@ -1033,11 +1033,12 @@ class Estimate {
                 case 'X': return RA3[1][level - 1];
                 default:
                     console.log("has wrong in mpOnce");
-                    return 0;
+                    return NaN;
             }
         }
-        else if (sort == "A4") {
+        else if (sort == "A4" || sort =="SA") {
             switch (kind) {
+                case 'N': if(sort =="SA") return RA4[0][level - 1];
                 case 'N': return RA4[0][level - 1] + whiteSmithRateInc <= 90 ? (level <= 10 ? RA4[0][level - 1] + whiteSmithRateInc : RA4[0][level - 1]) : 100;
                 case 'H': return RA4[1][level - 1];
                 case 'P': return RA4[2][level - 1];
@@ -1046,10 +1047,10 @@ class Estimate {
                 case 'X': return RA4[1][level - 1];
                 default:
                     console.log("has wrong in mpOnce");
-                    return 0;
+                    return NaN;
             }
         }
-        else if (sort == "B") {
+        else if (sort == "B" || sort =="SB") {
             switch (kind) {
                 case 'N': return RB[0][level - 1];
                 case 'H': return RB[1][level - 1];
@@ -1059,7 +1060,7 @@ class Estimate {
                 case 'X': return RB[1][level - 1];
                 default:
                     console.log("has wrong in mpOnce");
-                    return 0;
+                    return NaN;
             }
         }
         else {
@@ -1069,7 +1070,7 @@ class Estimate {
 
     mmOneEnd(kind, level, step = undefined) {
         let sort = this.sort;
-        if (sort == "A3" || sort == "A4" || sort == "B") {
+        if (sort == "A3" || sort == "A4" || sort == "B" || sort =="SA" || sort =="SB") {
             switch (kind) {
                 case 'N': return this.mmOnce(kind, level);
                 case 'H': return this.mmOnce(kind, level);
@@ -1079,13 +1080,13 @@ class Estimate {
                     console.log("has wrong kind in mmOneEnd");
 
                 }
-                    return 0;
+                    return NaN;
                 case 'T': return this.mmOnce(kind, level);
                 case 'S': return this.mms(level);
                 case 'X': return this.mms(level, kind, step);
                 default:
                     console.log("has wrong kind in mmOneEnd");
-                    return 0;
+                    return NaN;
             }
         } else {
             console.log("has wrong sort");
@@ -1094,7 +1095,7 @@ class Estimate {
 
     mmOneEndExtend(kind, level, step = undefined) {
         let sort = this.sort;
-        if (sort == "A3" || sort == "A4" || sort == "B") {
+        if (sort == "A3" || sort == "A4" || sort == "B" || sort =="SA" || sort =="SB") {
             switch (kind) {
                 case 'N': return this.mmOnceExtend(kind, level);
                 case 'H': return this.mmOnceExtend(kind, level);
@@ -1120,7 +1121,7 @@ class Estimate {
 
     mpOneEnd(kind, level, step = undefined) {
         let sort = this.sort;
-        if (sort == "A3" || sort == "A4" || sort == "B") {
+        if (sort == "A3" || sort == "A4" || sort == "B" || sort =="SA" || sort =="SB") {
             switch (kind) {
                 case 'N': return this.mpOnce(kind, level);
                 case 'H': return this.mpOnce(kind, level);
@@ -1142,7 +1143,7 @@ class Estimate {
         if (level <= 7) { //goal level must >=8
             console.log("has wrong in mps");
             console.log(`level=${level}   kind=${kind}    step=${step}\n`);
-            return 0;
+            return NaN;
         }
 
         let downLevel = level - 1;  // the goal level after down-level
@@ -1161,8 +1162,11 @@ class Estimate {
                         count_guahow--;
                 }
                 downLevelKind--;
+                if(downLevelKind<0){
+                    return NaN;
+                }
             }
-            
+
             mpDownLevel = this.mpOneEnd(step[downLevelKind], downLevel, step);
         }
         else if (kind == 'S') {
@@ -1185,7 +1189,7 @@ class Estimate {
         if (level <= 7) { //goal level must >=8
             console.log("has wrong in mms");
             console.log(`level=${level}   kind=${kind}    step=${step}\n`);
-            return 0;
+            return NaN;
         }
 
         let downLevel = level - 1;  // the goal level after down-level
@@ -1207,8 +1211,11 @@ class Estimate {
                         count_guahow--;
                 }
                 downLevelKind--;
+                if(downLevelKind<0){
+                    return NaN;
+                }
             }
-            
+
             mpDownLevel = this.mpOneEnd(step[downLevelKind], downLevel, step);
             mmDownLevel = this.mmOneEnd(step[downLevelKind], downLevel, step);
         }
@@ -1227,7 +1234,7 @@ class Estimate {
         let mpof = 1 - mpOrigin / 100;
         let mpd = mpDownLevel / 100;
 
-        
+
         return mmOrigin * (1 / (1 - mpof * mpd)) + mmDownLevel * (mpof / (1 - mpof * mpd));
     }
     mmsExtend(level, kind = 'S', step = undefined) {
@@ -1257,8 +1264,12 @@ class Estimate {
                         count_guahow--;
                 }
                 downLevelKind--;
+                if(downLevelKind<0){
+                    let error = new Estimate.Test.Result();
+                    return error;
+                }
             }
-            
+
             mpDownLevel = this.mpOneEnd(step[downLevelKind], downLevel, step);
             mmDownLevel = this.mmOneEndExtend(step[downLevelKind], downLevel, step);
         }
@@ -1277,7 +1288,7 @@ class Estimate {
         let mpof = 1 - mpOrigin / 100;
         let mpd = mpDownLevel / 100;
 
-        
+
         return mmOrigin.mul(1 / (1 - mpof * mpd)).add_result(mmDownLevel.mul(mpof / (1 - mpof * mpd)));
     }
 
@@ -1301,6 +1312,9 @@ class Estimate {
     operateExtend_general(current, mm, mp) {
         return (current.add_result(mm)).div(mp / 100);
     }
+
+
+
 
     show(info = ShowInfo.ExpectedTotalFee) {
         this.calc();
@@ -1342,10 +1356,10 @@ class Estimate {
 
                 for (let temp of head) {
                     if (temp.level_end >= i) {
-                        print_content += this.showRequire(info, temp, optimal, i);
+                        print_content += " "+this.showRequire(info, temp, optimal, i).alignRight(9);
                     }
                     else {
-                        print_content += this.showRequire(ShowInfo.None, temp, optimal, i);
+                        print_content += " "+this.showRequire(ShowInfo.None, temp, optimal, i).alignRight(9);
                     }
                 }
                 console.log(print_content);
@@ -1366,15 +1380,15 @@ class Estimate {
 
                     let title = ["ept Total", "veriTotal", "once Rate", "O-E Rate", "once MFee", "O-E MFee", "ept MFee", "once item", "O-E item", "ept item"];
 
-                    let save = temp;
+                    // let save = temp;
                     for (let li = 0; li < list.length; li++) {
                         let print_content = ` ${title[li].alignLeft(9)}`;
                         for (let temp of head) {
                             if (temp.level_end >= i) {
-                                print_content += showRequire(list[li], temp, optimal, i);
+                                print_content += " "+this.showRequire(list[li], temp, optimal, i).alignRight(9);
                             }
                             else {
-                                print_content += showRequire(ShowInfo.None, temp, optimal, i);
+                                print_content += " "+this.showRequire(ShowInfo.None, temp, optimal, i).alignRight(9);
                             }
                         }
                         console.log(print_content);
@@ -1386,10 +1400,10 @@ class Estimate {
                     let print_content = ` ${"ept Total".alignLeft(9)}`;
                     for (let temp of head) {
                         if (temp.level_end >= i) {
-                            print_content += showRequire(ShowInfo.ExpectedTotalFee, temp, optimal, i);
+                            print_content += " "+this.showRequire(ShowInfo.ExpectedTotalFee, temp, optimal, i).alignRight(9);
                         }
                         else {
-                            print_content += showRequire(ShowInfo.None, temp, optimal, i);
+                            print_content += " "+this.showRequire(ShowInfo.None, temp, optimal, i).alignRight(9);
                         }
                     }
                     console.log(print_content);
@@ -1457,10 +1471,10 @@ class Estimate {
                         let print_content = ` ${title[li].alignLeft(9)}`;
                         for (let temp of this.head) {
                             if (temp.level_end >= i) {
-                                print_content += showMaterial(li, temp, i);
+                                print_content += " "+this.showMaterial_part(li, temp, i).alignRight(9);
                             }
                             else {
-                                print_content += showRequire(ShowInfo.None, temp, optimal, i);
+                                print_content += " "+this.showRequire(ShowInfo.None, temp, optimal, i).alignRight(10);
                             }
                         }
                         console.log(print_content);
@@ -1476,53 +1490,241 @@ class Estimate {
 
     // private:
     showRequire(require, tempT, optimalT, i) {
-        let print_content;
+        let print_content="";
         let temp = tempT;
         let optimal = optimalT;
         switch (require) {
             case ShowInfo.ExpectedTotalFee:
                 if (optimal != undefined && (temp == optimal || temp.result[i] == optimal.result[i])) {
-                    print_content = `=>${temp.result[i].toFixed(0)}`.alignRight(10);
+                    if(temp.result[i]!=undefined && isNaN(temp.result[i])==false){
+                        print_content = `=>${temp.result[i].toFixed(0)}`;
+                    }
                 }
                 else {
-                    print_content = `${temp.result[i].toFixed(0)}`.alignRight(10);
+                    if(temp.result[i]!=undefined && isNaN(temp.result[i])==false){
+                        print_content = `${temp.result[i].toFixed(0)}`;
+                    }
                 }
                 break;
             case ShowInfo.OnceRate:
-                print_content = `${temp.onceRate[i].toFixed(2)}%`.alignRight(10);
+                print_content = `${temp.onceRate[i].toFixed(2)}%`;
                 break;
-            case ShowInfo.neToEndRate:
-                print_content = `${temp.oneToEndRate[i].toFixed(2)}`.alignRight(10);
+            case ShowInfo.OneToEndRate:
+                print_content = `${temp.oneToEndRate[i].toFixed(2)}%`;
                 break;
             case ShowInfo.OnceMFee:
-                print_content = `${temp.onceMFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.onceMFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.OneToEndMFee:
-                print_content = `${temp.oneToEndMFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.oneToEndMFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.ExpectedMFee:
-                print_content = `${temp.expectedMFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.expectedMFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.OnceItemFee:
-                print_content = `${temp.onceItemFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.onceItemFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.OneToEndItemFee:
-                print_content = `${temp.oneToEndItemFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.oneToEndItemFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.ExpectedItemFee:
-                print_content = `${temp.expectedItemFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.expectedItemFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.VerificationExpectedTotalFee:
-                print_content = `${temp.verificationExpectedTotalFee[i].toFixed(0)}`.alignRight(10);
+                print_content = `${temp.verificationExpectedTotalFee[i].toFixed(0)}`;
                 break;
             case ShowInfo.None:
-                print_content = "".alignRight(10);
+                print_content = "";
+                break;
+        }
+        return print_content;
+    }    
+
+    showMaterial(step){
+        if(step.indexOf("(opt")>=0){
+            let find = step.indexOf("(opt");
+            let level = parseInt(step.substr(find + 5));
+            this.findOptimalWay(level);
+        }else{
+            this.addTest(step);
+        }
+        this.calc();
+
+        if (this.itemName != undefined)
+            console.log(`${"item name".alignLeft(12)}${this.itemName.alignRight(12)}`);
+        console.log(`${"sort".alignLeft(12)}${this.sort.alignRight(12)}`);
+        console.log(`${"price".alignLeft(12)}${this.price.toFixed(0).alignRight(12)}`);
+        console.log(`${"step".alignLeft(12)}${step.alignRight(12)}`);
+        console.log();
+
+
+        let basic=[];
+        basic.push(ShowInfo.ExpectedTotalFee);
+        let list=[];
+        let title=[];
+        title[MaterialInfo.ITEM] = "ITEM";
+        title[MaterialInfo.Normal] = "Normal";
+        title[MaterialInfo.High] = "High";
+        title[MaterialInfo.Xtra] = "Xtra";
+        title[MaterialInfo.XtraHigh] = "XtraHigh";
+        title[MaterialInfo.SmithBless] = "SmithBles";
+        title[MaterialInfo.OldBless] = "OldBless";
+        title[MaterialInfo.GodBless] = "GodBless";
+        title[MaterialInfo.Ticket] = "Ticket";
+
+        title[MaterialInfo.ITEM] = "ITEM";
+        title[MaterialInfo.Normal] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "大神" : "大鋁";
+        title[MaterialInfo.High] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "濃縮神" : "濃縮鋁";
+        title[MaterialInfo.Xtra] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "高濃縮神" : "高濃縮鋁";
+        title[MaterialInfo.XtraHigh] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "鈽鐳" : "鈣";
+        title[MaterialInfo.SmithBless] = "鐵祝";
+        title[MaterialInfo.OldBless] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "祝武" : "祝防";
+        title[MaterialInfo.GodBless] = "神乎";
+        title[MaterialInfo.Ticket] = ["A3", "A4", "SA"].indexOf(this.sort)>=0 ? "武券" : "防券";
+
+        let temp=this.head[this.head.length-1];
+        list.push(MaterialInfo.ITEM);
+        for (let i = 0; i <= temp.level_end; i++) {
+            if (temp.resultExtend[i].nMaterial[0] != 0) list.push(MaterialInfo.Normal);
+            if (temp.resultExtend[i].nMaterial[1] != 0) list.push(MaterialInfo.High);
+            if (temp.resultExtend[i].nMaterial[2] != 0) list.push(MaterialInfo.Xtra);
+            if (temp.resultExtend[i].nMaterial[3] != 0) list.push(MaterialInfo.XtraHigh);
+            if (temp.resultExtend[i].nBless[0] != 0) list.push(MaterialInfo.SmithBless);
+            if (temp.resultExtend[i].nBless[1] != 0) list.push(MaterialInfo.OldBless);
+            if (temp.resultExtend[i].nBless[2] != 0) list.push(MaterialInfo.GodBless);
+            if (list.indexOf(MaterialInfo.Ticket) == -1) {
+                for (let k = 0; k < 21; k++) {
+                    if (temp.resultExtend[i].nTicket[k] != 0) {
+                        list.push(MaterialInfo.Ticket);
+                        break;
+                    }
+                }
+            }
+        }
+        // console.log(list);
+
+        list.sort((a, b) => a - b);
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+        list = list.filter(onlyUnique);
+
+        // show, if the kind of info to print is too much, divide they into N parts.
+        let max_hold = 7;
+        let remaind = max_hold;
+        let print_content="";
+        print_content+=`${"".alignLeft(9)} ${"ept Total".alignRight(10)}`;
+        remaind--;
+
+        while (list.length!=0) {
+            let list_part=[];
+            if (list.length > remaind) {
+                list_part = list.splice(0, remaind);
+            }
+            else {
+                list_part = list.splice(0, list.length);
+            }
+
+            if (remaind == 7) {
+                console.log();
+                print_content="";
+                print_content+=`${"".alignLeft(9)} `;
+            }
+            for (let li = 0; li < list_part.length; li++) {
+                let temp=title[list_part[li]];
+                let width=10;
+                for(let ch of temp){
+                    if(ch.match(/[\u4e00-\u9fa5]/g)){
+                        width--;
+                    }
+                }
+                print_content+=`${title[list_part[li]].alignRight(width)}`
+            }
+            console.log(print_content);
+            console.log();
+            for (let i = 0; i <= temp.level_end; i++) {
+                print_content=`level ${i}`.alignLeft(9)+" ";
+                print_content+=this.showMaterialInRow(basic, list_part, temp, i);
+                console.log(print_content);
+            }
+            basic=[];
+            remaind = max_hold;
+        }
+        this.deleteLastTest();
+        console.log(".".repeat(30));
+    }
+
+    showMaterial_part(toShow, temp, i){
+        let print_content="";
+        let resultExtend = temp.resultExtend[i];
+        switch (toShow) {
+            case MaterialInfo.ITEM:
+                if (resultExtend.nItem != 0)
+                    print_content=`${resultExtend.nItem.toFixed(2)}`;
+                break;
+            case MaterialInfo.Normal:
+                if (resultExtend.nMaterial[0] != 0)
+                    print_content=`${resultExtend.nMaterial[0].toFixed(2)}`;
+                break;
+            case MaterialInfo.High:
+                if (resultExtend.nMaterial[1] != 0)
+                    print_content=`${resultExtend.nMaterial[1].toFixed(2)}`;
+                break;
+            case MaterialInfo.Xtra:
+                if (resultExtend.nMaterial[2] != 0)
+                    print_content=`${resultExtend.nMaterial[2].toFixed(2)}`;
+                break;
+            case MaterialInfo.XtraHigh:
+                if (resultExtend.nMaterial[3] != 0)
+                    print_content=`${resultExtend.nMaterial[3].toFixed(2)}`;
+                break;
+            case MaterialInfo.SmithBless:
+                if (resultExtend.nBless[0] != 0)
+                    print_content=`${resultExtend.nBless[0].toFixed(2)}`;
+                break;
+            case MaterialInfo.OldBless:
+                if (resultExtend.nBless[1] != 0)
+                    print_content=`${resultExtend.nBless[1].toFixed(2)}`;
+                break;
+            case MaterialInfo.GodBless:
+                if (resultExtend.nBless[2] != 0)
+                    print_content=`${resultExtend.nBless[2].toFixed(2)}`;
+                break;
+            case MaterialInfo.Ticket:
+                for (var i = 0; i < 21; i++) {
+                    if (resultExtend.nTicket[i] != 0) {
+                        print_content=`(+${i})${resultExtend.nTicket[i].toFixed(2)}`;
+                        break;
+                    }
+                }
+                break;
+            case MaterialInfo.cItemFee:
+                print_content=`${resultExtend.checkItemFee(this.price).toFixed(0)}`;
+                break;
+            case MaterialInfo.cMFee:
+                print_content=`${resultExtend.checkMFee(this.sort).toFixed(0)}`;
+                break;
+            case MaterialInfo.cTotalFee:
+                print_content=`${resultExtend.checkTotal(this.price, this.sort).toFixed(0)}`;
+                break;
+            default:
                 break;
         }
         return print_content;
     }
 
-
+    // basic function component, to show info according to a combine consisting of certain Test & certain level.
+    showMaterialInRow(toShow1, toShow2, temp, level){
+        let print_content="";
+        for(let i = 0; i<toShow1.length; i++){
+            print_content+=" "+this.showRequire(toShow1[i], temp, undefined, level).alignRight(9);
+        }
+        for (let i = 0; i < toShow2.length; i++) {
+            print_content+=" "+this.showMaterial_part(toShow2[i], temp, level).alignRight(9);
+        }
+        return print_content;
+    }
+    
     getCost(level) {
         this.findOptimalWay(level);
         let re = this.head[this.head.length - 1].result[level];
@@ -1569,7 +1771,7 @@ class Estimate {
         }
         return re;
     }
-    
+
     static myCompare(n1, n2) {
         if (n1.second >= n2.second)
             return -1;
@@ -1578,7 +1780,7 @@ class Estimate {
         if (n1.second <= n2.second)
             return -1;
     }
-    
+
     static calcCombineEx(item, combines, top, ex) {
         let array_store_combine_and_totalFee = [];
         // vector < pair < vector < this.>, this.> > re;
@@ -1619,7 +1821,7 @@ class Estimate {
         console.log(`magic ${normalMagicFee}/${pollutedMagicFee}\n`);
 
         console.log(`${"OPER".alignLeft(10)}${"cost".alignRight(10)}     ${"way".alignRight(20)}`);
-        
+
         console.log(`${"level 0".alignLeft(10)}${E.getCost(0).toFixed(0).alignRight(10)}`);
         while (index != combine.length) {
             let next = combine[index++];

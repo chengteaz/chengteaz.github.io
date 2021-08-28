@@ -1,11 +1,5 @@
 'use strict';
 
-class Material_UI {
-    constructor(element) {
-        this.element = element;
-    }
-}
-
 class Test {
     constructor(estimate) {
         this.estimate = estimate;
@@ -23,19 +17,20 @@ class Test {
     // private
     fill_results() {
         this.results = [];
-        for (let i = 0; i <= this.estimate.head[0].level_end; i++) {
-            // let temp = document.createElement("div");
-            // temp.classList.add("one-result");
+        for (let i = 0; i <= this.estimate.head[0].level_end || i <= this.estimate.level_start; i++) {
+            if((this.estimate.sort=="SA" || this.estimate.sort=="SB") && i>10){
+                this.results.push(undefined);
+                continue;
+            }
             let value;
             if (this.estimate.head[0].result[i] != undefined) {
                 value = parseInt(this.estimate.head[0].result[i]);
             } else if (this.estimate.head[0].result[i] == undefined) {
                 value = undefined;
             }
-            // temp.textContent = value;
-            // this.element.appendChild(temp);
             this.results.push(value);
         }
+        this.test_details=this.estimate.head[0];
     }
 }
 
@@ -62,9 +57,12 @@ class Compare_UI {
         this.log_result_to_ui();
     }
 
+    logTest(test_index) {
+        console.log(`log test, test name : ${this.tests[test_index].estimate.itemName}`);
+        console.log(this.tests[test_index].test_details);
+    }
+
     removeTest(test_index) {
-        // alert("removeTest");
-        // console.log(ev.target);
         this.tests.splice(test_index, 1);
         this.log_result_to_ui();
     }
@@ -91,15 +89,15 @@ class Compare_UI {
                 if (test.estimate.head[0].level_end > max_level_end) {
                     max_level_end = test.estimate.head[0].level_end;
                 }
+                if (test.estimate.level_start > max_level_end) {
+                    max_level_end = test.estimate.level_start;
+                }
             }
 
             // then create and append rows
             let temp = document.createElement("div");
             temp.classList.add("test_name_row");
             test_result_block.appendChild(temp);
-            // temp = document.createElement("div");
-            // temp.classList.add("item_price_row");
-            // test_result_block.appendChild(temp);
             temp = document.createElement("div");
             temp.classList.add("item_kind_row");
             test_result_block.appendChild(temp);
@@ -145,6 +143,10 @@ class Compare_UI {
                         temp2.classList.add("hidden");
                         temp2.onclick = MouseOperation.refresh_test;
                         temp.appendChild(temp2);
+                        temp2 = document.createElement("div");
+                        temp2.classList.add("hidden");
+                        temp2.onclick = MouseOperation.log_test;
+                        temp.appendChild(temp2);
 
                     }
                     row.appendChild(temp);
@@ -152,7 +154,7 @@ class Compare_UI {
             }
 
 
-            // set grid'textContent
+            // set grid's textContent
             for (let i = 0; i < this.tests.length; i++) {
                 let test = this.tests[i];
                 // console.log(test_result_block.querySelector(".test_name_row"));
@@ -160,11 +162,9 @@ class Compare_UI {
                 test_result_block.querySelector(".test_name_row").children[i].children[0].title = test.estimate.itemName;
                 test_result_block.querySelector(".test_name_row").children[i].children[1].textContent = "\u2716";
                 test_result_block.querySelector(".test_name_row").children[i].children[2].textContent = "\u27f3";
-                // test_result_block.querySelector(".test_name_row").children[i].textContent = test.estimate.itemName != "" ? test.estimate.itemName : "　";
-                // test_result_block.querySelector(".item_price_row").children[i].textContent = test.estimate.price;
+                test_result_block.querySelector(".test_name_row").children[i].children[3].textContent = "\u24d8";
                 test_result_block.querySelector(".item_kind_row").children[i].textContent = test.estimate.sort;
                 test_result_block.querySelector(".test_step_row").children[i].textContent = test.estimate.head[0].step;
-                // test_result_block.querySelector(".test_step_row").children[i].textContent = test.estimate.head[0].step != "" ? test.estimate.head[0].step : "　";
                 for (let k = 0; k < test.results.length; k++) {
                     let result = test.results[k];
                     if (result == undefined) {
@@ -174,18 +174,7 @@ class Compare_UI {
                     }
                     test_result_block.querySelectorAll(".result_row")[k].children[i].textContent = result;
                 }
-                // if (this.element.querySelector(".test_name") == undefined) {
-                //         for (let temp of this.element.children) {
-                //             temp.style.alignSelf = "flex-start";
-                //             temp.style.wordBreak = "break-word";
-                //         }
-                //     }
-                // this.element.querySelector(".test_name").textContent = this.estimate.itemName != "" ? this.estimate.itemName : "　";
-                // this.element.querySelector(".item_price").textContent = this.estimate.price;
-                // this.element.querySelector(".item_kind").textContent = this.estimate.sort;
-                // this.element.querySelector(".test_step").textContent = this.estimate.head[0].step != "" ? this.estimate.head[0].step : "　";
             }
-
 
 
             // row title(first column)
@@ -219,42 +208,7 @@ class Compare_UI {
                 row.insertBefore(temp, row.firstChild);
             }
 
-            // function testHoverInit() {
-            //     $('.result_row div').hover(function () {
-            //         var t = parseInt($(this).index()) + 1;
-            //         $(this).parents('.test_result').find('div > div:nth-child(' + t + ')').addClass('highlighted');
-            //         $(this).removeClass('highlighted');
-            //     },
-            //         function () {
-            //             var t = parseInt($(this).index()) + 1;
-            //             $(this).parents('.test_result').find('div > div:nth-child(' + t + ')').removeClass('highlighted');
-            //         });
-            // }
-            function testHoverInit2() {  // this can get effect with future adding element
-                $('.test_result > div > div').hover(function () {
-                    var t = parseInt($(this).index()) + 1;
-                    $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:not(:first-child)').removeClass('hidden');
-                    // $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:nth-child(2)').removeClass('hidden');
-                    // $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:nth-child(2)').addClass('visible');
-                },
-                    function () {
-                        var t = parseInt($(this).index()) + 1;
-                        $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:not(:first-child)').addClass('hidden');
-                        // $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:nth-child(2)').removeClass('hidden');
-                        // $(this).parents('.test_result').find('div:first-child > div:nth-child(' + t + ') > div:nth-child(2)').removeClass('visible');
-                    });
-            }
-            // function contentEditable() {
-            //     $('.test_name_row > div:not(:first-child) > div:first-child').click(function () {
-            //         this.contentEditable=true;
-            //     });
-            // }
-            // contentEditable();
         }
-    }
-
-    copy(){
-        
     }
 }
 class MouseOperation {
@@ -263,11 +217,19 @@ class MouseOperation {
         let test_index = $(compare.querySelectorAll(".test_name_row > div:not(:first-child)")).index(ev.target.parentElement);
         let compare_instance = compares[compare.rand];
         compare_instance.refreshTest(test_index);
+        compare_instance.tests[test_index].estimate.showMaterial(compare_instance.tests[test_index].estimate.head[0].step);
     }
     static remove_test = function (ev) {
         let compare = ev.target.closest(".compare");
         let test_index = $(compare.querySelectorAll(".test_name_row > div:not(:first-child)")).index(ev.target.parentElement);
         let compare_instance = compares[compare.rand];
         compare_instance.removeTest(test_index);
+    }
+    static log_test = function (ev) {
+        let compare = ev.target.closest(".compare");
+        let test_index = $(compare.querySelectorAll(".test_name_row > div:not(:first-child)")).index(ev.target.parentElement);
+        let compare_instance = compares[compare.rand];
+        compare_instance.logTest(test_index);
+        compare_instance.tests[test_index].estimate.show(ShowInfo.AllInfoExtend);
     }
 }

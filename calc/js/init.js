@@ -1,5 +1,4 @@
 'use strict';
-var material;
 var compares = {};
 (function () {
 
@@ -10,7 +9,6 @@ var compares = {};
 
     var container = document.getElementById("material");
 
-    material = new Material_UI(container);
     var title_div = document.createElement("div");
     title_div.classList.add("title_block");
 
@@ -21,14 +19,20 @@ var compares = {};
 
     var temp = document.createElement("input");
     temp.type = "button";
-    temp.value = "import";
+    temp.value = "import(Material)";
     temp.setAttribute("onclick", "import_material_data()");
     title_div.appendChild(temp);
 
+    // var temp = document.createElement("input");
+    // temp.type = "button";
+    // temp.value = "export";
+    // temp.setAttribute("onclick", "export_material_data()");
+    // title_div.appendChild(temp);
+
     var temp = document.createElement("input");
     temp.type = "button";
-    temp.value = "export";
-    temp.setAttribute("onclick", "export_material_data()");
+    temp.value = "import_page";
+    temp.setAttribute("onclick", "import_page()");
     title_div.appendChild(temp);
 
     var temp = document.createElement("input");
@@ -46,7 +50,13 @@ var compares = {};
     var temp = document.createElement("input");
     temp.type = "button";
     temp.value = "clear";
-    temp.setAttribute("onclick", "clear_material_data()");
+    temp.setAttribute("onclick", "clear_material_data(this)");
+    title_div.appendChild(temp);
+
+    var temp = document.createElement("input");
+    temp.type = "button";
+    temp.value = "reset";
+    temp.setAttribute("onclick", "fill_material_data(this)");
     title_div.appendChild(temp);
 
     // var temp = document.createElement("input");
@@ -145,19 +155,19 @@ var compares = {};
 
     var temp = document.createElement("input");
     temp.type = "button";
-    temp.value = "import";
-    temp.setAttribute("onclick", "import_compare()");
+    temp.value = "import(compares)";
+    temp.setAttribute("onclick", "import_file('compare_area')");
     title_div.appendChild(temp);
+
+    // var temp = document.createElement("input");
+    // temp.type = "button";
+    // temp.value = "export";
+    // temp.setAttribute("onclick", "export_compare()");
+    // title_div.appendChild(temp);
 
     var temp = document.createElement("input");
     temp.type = "button";
-    temp.value = "export";
-    temp.setAttribute("onclick", "export_compare()");
-    title_div.appendChild(temp);
-
-    var temp = document.createElement("input");
-    temp.type = "button";
-    temp.value = "clear";
+    temp.value = "remove_all";
     temp.setAttribute("onclick", "clear_compare()");
     title_div.appendChild(temp);
 
@@ -210,7 +220,7 @@ function fileDropInit() {
     // drop file to import
     // https://stackoverflow.com/questions/19841859/full-page-drag-and-drop-files-website
     // https://stackoverflow.com/questions/18588835/allow-a-div-to-cover-the-whole-page-instead-of-the-area-within-the-container
-    let selector = "#material, #compare_area, .compare, #background";
+    let selector = "#material, #compare_area, .compare, *:not(#material):not(#compare_area):not(.compare)";
     $(document).on(
         'dragover', selector,
         function (e) {
@@ -233,8 +243,15 @@ function fileDropInit() {
                     e.preventDefault();
                     e.stopPropagation();
                     /*UPLOAD FILES HERE*/
-                    // console.log(this);
-                    upload(e.originalEvent.dataTransfer.files, this);
+                    console.log(this);
+                    let target;
+                    if((target=this.closest("[id^=compare]"))!=null){
+                        upload(e.originalEvent.dataTransfer.files, target);
+                    }else if((target=this.closest("[id^=material]"))!=null){
+                        upload(e.originalEvent.dataTransfer.files, target);
+                    }else{
+                        upload(e.originalEvent.dataTransfer.files, {id:""});
+                    }
                 }
             }
         }
