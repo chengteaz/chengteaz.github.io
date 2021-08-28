@@ -6,6 +6,13 @@ var compares = {};
     container_title.textContent = "Upgrade Calc";
 
 
+    let demo=document.createElement("input");
+    demo.type = "button";
+    demo.value = "Demo Page File";
+    demo.style.marginLeft="10px";
+    demo.classList.add("hidden");
+    demo.setAttribute("onclick", "download_file('./DemoPage.txt')");
+    document.querySelector("#container>.title").appendChild(demo);
 
     var container = document.getElementById("material");
 

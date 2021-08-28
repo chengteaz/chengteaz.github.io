@@ -409,3 +409,6 @@ input:checked+.step.grid {
 .test_name:focus {
     text-overflow: initial;
 }
+#container>.title:hover>input{
+    display: inline;
+}

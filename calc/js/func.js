@@ -12,6 +12,11 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
+function download_file(url) {
+    fetch(url).then(res => res.blob()).then(blob => {
+        download(url.split('/').pop(), blob);
+    });
+}
 
 
 function import_file(import_type) {
