@@ -13,15 +13,14 @@ function download(filename, text) {
 }
 
 function download_file(url) {
-    fetch(url).then(res => res.text()).then(text => {
-        download(url.split('/').pop(), text);
+    fetch(url).then(res => res.blob()).then(blob => {
+        download(url.split('/').pop(), blob);
     });
 }
 
 
 function import_file(import_type) {
     // alert("import_material_data");
-    // openFile("file:///C:/Users/ken/Downloads/Material info[2020-03-20].txt");
 
     // 生活記事簿: 使用FileReader讀取file資料 - javascript
     // http://hklifenote.blogspot.com/2016/08/filereaderfile-javascript.html
