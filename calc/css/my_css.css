@@ -409,6 +409,26 @@ input:checked+.step.grid {
 .test_name:focus {
     text-overflow: initial;
 }
-#container>.title:hover>input{
+#container>.title:hover>*{
     display: inline;
+}
+#container>.title>*>*:hover + *{
+    display: inline;
+}
+.tooltip{
+    margin-left: 10px;
+    border-radius: 2px;
+    font-size: 8px;
+    background-color: #CCCCCC;
+    padding: 2px 6px;
+}
+.tooltip:before{
+    content: " ";
+    position: absolute;
+    top: 4px;
+    left: -4px;
+    margin-left: -4px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: transparent #CCCCCC  transparent transparent;
 }

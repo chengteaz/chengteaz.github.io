@@ -13,8 +13,8 @@ function download(filename, text) {
 }
 
 function download_file(url) {
-    fetch(url).then(res => res.blob()).then(blob => {
-        download(url.split('/').pop(), blob);
+    fetch(url).then(res => res.text()).then(text => {
+        download(url.split('/').pop(), text);
     });
 }
 

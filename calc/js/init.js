@@ -6,13 +6,23 @@ var compares = {};
     container_title.textContent = "Upgrade Calc";
 
 
-    let demo=document.createElement("input");
-    demo.type = "button";
-    demo.value = "Demo Page File";
-    demo.style.marginLeft="10px";
+    let demo=document.createElement("div");
     demo.classList.add("hidden");
-    demo.setAttribute("onclick", "download_file('./DemoPage.txt')");
+    demo.style.whiteSpace="nowrap";
     document.querySelector("#container>.title").appendChild(demo);
+
+    let button=document.createElement("input");
+    button.type = "button";
+    button.value = "Demo Page File";
+    button.style.marginLeft="10px";
+    button.setAttribute("onclick", "download_file('./DemoPage.txt')");
+    demo.appendChild(button);
+
+    let tooltip=document.createElement("div");
+    tooltip.classList.add("hidden");
+    tooltip.classList.add("tooltip");
+    tooltip.textContent="Drag & drop the downloaded file to this webpage"
+    demo.appendChild(tooltip);
 
     var container = document.getElementById("material");
 
