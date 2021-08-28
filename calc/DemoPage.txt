@@ -1,0 +1,106 @@
+{
+    "dataType": "composite",
+    "array": [
+        {
+            "dataType": "material",
+            "A": [
+                2.5,
+                66,
+                84,
+                5
+            ],
+            "B": [
+                3,
+                72,
+                84,
+                5
+            ],
+            "C": [
+                348,
+                860,
+                2800,
+                4147
+            ],
+            "TA": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                9000,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "TB": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                23000,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ]
+        },
+        {
+            "dataType": "compare",
+            "compare_data": [
+                {
+                    "compare_name": "Demo",
+                    "tests": [
+                        {
+                            "item": {
+                                "itemName": "絕地黑光劍",
+                                "price": 25000,
+                                "sort": "A4"
+                            },
+                            "level_start": 0,
+                            "step": "T7 P8 X9 PABCDE(opt 14)"
+                        },
+                        {
+                            "item": {
+                                "itemName": "幻象裝",
+                                "price": 400,
+                                "sort": "B"
+                            },
+                            "level_start": 0,
+                            "step": "N1234 H567 X89 PABCDE(opt 14)"
+                        },
+                        {
+                            "item": {
+                                "itemName": "自動裝",
+                                "price": 6298,
+                                "sort": "B"
+                            },
+                            "level_start": 0,
+                            "step": "N1234 H56 P78 X9 PABCDE(opt 14)"
+                        },
+                        {
+                            "item": {
+                                "itemName": "自動裝(+7箱)",
+                                "price": 9298,
+                                "sort": "B"
+                            },
+                            "level_start": 7,
+                            "step": "P8 X9 PABCDE(opt 14)"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
