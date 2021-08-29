@@ -168,8 +168,8 @@ var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200];        // weapon
 var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200];      // equipment upgrade fee
 var C = [p_point_rate * 29, 3000, t_rate * 115, t_rate * 300];  // smith,weapon,equipment,god blessing fee
 
-var TA = [0, 0, 0, 0, 0, 1500, 17000, 17000, 19000, , , , , ,];   //+5~+9 weapon    ticket fee (T icket) 
-var TB = [0, 0, 0, 0, 0, 3000, 45000, 45000, , , , , , ,]; //+5~+9 equipment ticket fee 
+var TA = [, , , , , 1500, 17000, 17000, 19000, , , , , ,];   //+5~+9 weapon    ticket fee (T icket) 
+var TB = [, , , , , 3000, 45000, 45000, , , , , , ,]; //+5~+9 equipment ticket fee 
 
 var material_data_map = new Map();
 var material_data_map_skip_workaround = new Map();
@@ -763,7 +763,7 @@ class Estimate {
                 }
             }
 
-            if (i >= 5 && i <= 13 && this.mmOnce('T', level) != 0 && this.mmOnce('T', level) != undefined) {
+            if (i >= 5 && i <= 14 && this.mmOnce('T', level) != undefined) {
                 if (this.sort != "SA" && this.sort != "SB") {
                     kind = 'T';
                     temp = this.operate(tempT.result[level_start], kind, level);
@@ -1322,8 +1322,8 @@ class Estimate {
             console.log("item name".alignLeft(12) + this.itemName);
         console.log("sort".alignLeft(12) + this.sort);
         console.log("price".alignLeft(12) + this.price);
-        console.log(`${"cost".alignLeft(12) + this.mmOnce('N')}/${this.mmOnce('H')}/${this.mmOnce('P', 8) - this.mmOnce('H', 8)}/${this.mmOnce('P', 7)}`);
-        console.log(`${"ticket 5up".alignLeft(12) + this.mmOnce('T', 5)}/${this.mmOnce('T', 6)}/${this.mmOnce('T', 7)}/${this.mmOnce('T', 8)}`);
+        // console.log(`${"cost".alignLeft(12) + this.mmOnce('N')}/${this.mmOnce('H')}/${this.mmOnce('P', 8) - this.mmOnce('H', 8)}/${this.mmOnce('P', 7)}`);
+        // console.log(`${"ticket 5up".alignLeft(12) + this.mmOnce('T', 5)}/${this.mmOnce('T', 6)}/${this.mmOnce('T', 7)}/${this.mmOnce('T', 8)}`);
         console.log("");
 
         let head = this.head;
