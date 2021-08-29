@@ -1025,7 +1025,7 @@ class Estimate {
         let sort = this.sort;
         if (sort == "A3") {
             switch (kind) {
-                case 'N': return RA3[0][level - 1] + whiteSmithRateInc <= 90 ? (level <= 10 ? RA3[0][level - 1] + whiteSmithRateInc : RA3[0][level - 1]) : 100;
+                case 'N': return RA3[0][level - 1] <= 90 ? (level <= 10 ? RA3[0][level - 1] + whiteSmithRateInc : RA3[0][level - 1]) : 100;
                 case 'H': return RA3[1][level - 1];
                 case 'P': return RA3[2][level - 1];
                 case 'T': return 100;
@@ -1039,7 +1039,7 @@ class Estimate {
         else if (sort == "A4" || sort =="SA") {
             switch (kind) {
                 case 'N': if(sort =="SA") return RA4[0][level - 1];
-                case 'N': return RA4[0][level - 1] + whiteSmithRateInc <= 90 ? (level <= 10 ? RA4[0][level - 1] + whiteSmithRateInc : RA4[0][level - 1]) : 100;
+                case 'N': return RA4[0][level - 1] <= 90 ? (level <= 10 ? RA4[0][level - 1] + whiteSmithRateInc : RA4[0][level - 1]) : 100;
                 case 'H': return RA4[1][level - 1];
                 case 'P': return RA4[2][level - 1];
                 case 'T': return 100;
