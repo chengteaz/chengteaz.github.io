@@ -776,7 +776,7 @@ class Estimate {
 
             tempT.result[level] = min;
             if (finalKind == 'T')
-                tempT.step = `T${level}`;
+                tempT.step = `T${this.decimalToHexChar(level)}`;
             else if (finalKind == 'X' && level_start + 1 == level) {
                 tempT.step = fix;
             }
