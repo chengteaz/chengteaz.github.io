@@ -38,7 +38,7 @@ function import_file(import_type) {
             if(import_type=="material_only"){
                 upload(this.files, {id:"material_only"});
             }else if(import_type=="page"){
-                upload(this.files, {});
+                upload(this.files, {id:""});
             }else if(import_type=="compare_area"){
                 upload(this.files, {id:"compare_area_only"});
             }else if(import_type.indexOf("compare_")>=0){
