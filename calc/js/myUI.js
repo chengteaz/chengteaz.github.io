@@ -24,7 +24,7 @@ class Test {
             }
             let value;
             if (this.estimate.head[0].result[i] != undefined) {
-                value = parseInt(this.estimate.head[0].result[i]);
+                value = Math.round(this.estimate.head[0].result[i]);
             } else if (this.estimate.head[0].result[i] == undefined) {
                 value = undefined;
             }
