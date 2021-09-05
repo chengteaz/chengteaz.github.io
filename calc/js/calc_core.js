@@ -1197,7 +1197,7 @@ class Estimate {
         let mpOrigin = this.mpOnce('S', level);
 
         let mmDownLevel;
-        let mmOrigin = this.mmOnce('S');
+        let mmOrigin = this.mmOnce('S', level);
 
         if (kind == 'X') {
             let downLevelKind = step.lastIndexOf(this.decimalToHexChar(downLevel));
@@ -1250,7 +1250,7 @@ class Estimate {
         let mpOrigin = this.mpOnce('S', level);
 
         let mmDownLevel = new Estimate.Test.Result();
-        let mmOrigin = this.mmOnceExtend('S');
+        let mmOrigin = this.mmOnceExtend('S', level);
 
         if (kind == 'X') {
             let downLevelKind = step.lastIndexOf(this.decimalToHexChar(downLevel));
