@@ -993,8 +993,9 @@ class Estimate {
                                 re.nBless[1]++;
                                 break;
                             } else if (C[2] >= B[3] + C[3]) {
-                                    re.nMaterial[3]++;
-                                    re.nBless[2]++;
+                                re.nMaterial[3]++;
+                                re.nBless[2]++;
+                                break;
                             }
                         }
                     }
