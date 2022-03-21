@@ -89,12 +89,17 @@ function upload(files, target) {
 
         if (data.dataType == "material") {
             if (target.id == "material" || target.id == "composite") {
+                // when use old export pageinfo, set initial value for yther & zther.
+                data.A[4]=data.A[4]==undefined?0:data.A[4];
+                data.A[5]=data.A[5]==undefined?0:data.A[5];
+                data.B[4]=data.B[4]==undefined?0:data.B[4];
+                data.B[5]=data.B[5]==undefined?0:data.B[5];
+
                 A = data.A;
                 B = data.B;
                 C = data.C;
                 TA = data.TA;
                 TB = data.TB;
-
 
                 apply_material_data();
                 operation_cb({ value: `import file(${files[0].name}) & apply` });
@@ -536,6 +541,7 @@ function new_compare(insertAtIndex) {
     text.textContent = "item kind";
     temp.appendChild(text);
     var kind = ["A3", "A4", "B", "SA", "SB"];
+    // var kind = ["A3", "A4", "B", "SA", "SB", "A5", "B2"];
     for (var k of kind) {
         var grid = document.createElement("label");
         grid.classList.add("grid");
@@ -1051,4 +1057,22 @@ function openTab(tab_link) {
     tab_link.classList.toggle("active");
     // console.log(tab_link.closest(".path_add"));
 
+}
+
+// log rate table accroding sort(A3, A4, B, SA, SB)
+function get_rate(sort){
+    let print="level".alignLeft(10) + ["","N", "H", "X", "P", "T"].join(" ".repeat(5));
+    console.log(print);
+    for(let i=0;i<=21;i++){
+        let kinds=["N", "H", "X", "P", "T"];
+        let print="";
+        let level=`+${i}`.alignLeft(10);
+        print+=level;
+        for(let kind of kinds){
+            let e=new Estimate(new Item("", "", sort));
+            let rate=`${e.mpOnce(kind, i)}%`.alignRight(6);
+            print+=rate;
+        }
+        console.log(print);
+    }
 }

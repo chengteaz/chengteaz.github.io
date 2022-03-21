@@ -139,6 +139,8 @@ class pair {
 
 var material_listA = ["大神", "濃縮神*", "高濃縮神*", "鈽鐳"];
 var material_listB = ["大鋁", "濃縮鋁*", "高濃縮鋁*", "鈣"];
+// var material_listA = ["大神", "濃縮神*", "高濃縮神*", "鈽鐳", "乙神", "濃縮乙神"];
+// var material_listB = ["大鋁", "濃縮鋁*", "高濃縮鋁*", "鈣", "乙鋁", "濃縮乙鋁"];
 var material_listC = ["鐵祝*", "祝武", "祝防", "神乎"];
 var material_listTA = ["+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14"];   //+5~+9 weapon    ticket fee (T icket) 
 var material_listTB = ["+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14"]; //+5~+9 equipment ticket fee 
@@ -164,8 +166,10 @@ material_list_title_map.set("TB", "防券");
 // material fee (P point, T bee)
 var p_point_rate = 30;
 var t_rate = 35;
-var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200];        // weapon    upgrade fee
-var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200];      // equipment upgrade fee
+// var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200];        // weapon    upgrade fee
+// var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200];      // equipment upgrade fee
+var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200, 30, 300];        // weapon    upgrade fee
+var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200, 30, 300];      // equipment upgrade fee
 var C = [p_point_rate * 29, 3000, t_rate * 115, t_rate * 300];  // smith,weapon,equipment,god blessing fee
 
 var TA = [, , , , , 1500, 17000, 17000, 19000, , , , , ,];   //+5~+9 weapon    ticket fee (T icket) 
@@ -174,7 +178,8 @@ var TB = [, , , , , 3000, 45000, 45000, , , , , , ,]; //+5~+9 equipment ticket f
 var material_data_map = new Map();
 var material_data_map_skip_workaround = new Map();
 
-var smithNum = [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4];     // needed nim of smith blessing for trying certain upgrade
+// var smithNum = [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4];     // needed nim of smith blessing for trying certain upgrade
+var smithNum = [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 9, 15];     // needed nim of smith blessing for trying certain upgrade
 var whiteSmithRateInc = 10; //default use, (unsafe upgrade, normal) success rate +10%
 
 // success rate
@@ -186,11 +191,19 @@ var RA3 = [[100, 100, 100, 100, 100, 60, 50, 20, 20, 19, 18, 18, 18, 18, 18, 17,
 var RA4 = [[100, 100, 100, 100, 60, 40, 40, 20, 20, 9, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//nh1~7 (N ormal)
 [100, 100, 100, 100, 90, 70, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//h1~7; (H igh)
 [0, 0, 0, 0, 0, 0, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5]];  //p7~20;  (P revent)
+//  weapon LV.5
+var RA5 = [[100, 100, 100, 100, 60, 40, 40, 20, 20, 9, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//(N ormal)
+[100, 100, 100, 100, 90, 70, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5]];  //(H igh)
 
 //  equipment
 var RB = [[100, 100, 100, 100, 60, 40, 40, 20, 20, 9, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//nh1~7 (N ormal)
 [100, 100, 100, 100, 90, 70, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//h1~7; (H igh)
 [0, 0, 0, 0, 0, 0, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5]];  //p7~20;  (P revent)
+
+//  equipment LV.2
+var RB2 = [[100, 100, 100, 100, 60, 40, 40, 20, 20, 9, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5],//(N ormal)
+[100, 100, 100, 100, 90, 70, 70, 40, 40, 20, 8, 8, 8, 8, 8, 7, 7, 7, 5, 5]];  //(H igh)
+
 
 
 function memset(array, val, size) {
@@ -819,7 +832,11 @@ class Estimate {
                         }
                         else if (level == 13) {
                             let min = C[1];
-                            min = min < A[3] + C[3] ? min : A[3] + C[3];
+                            let temp;
+                            temp = A[3] + C[3];
+                            min = min < temp ? min : temp;
+                            temp = A[3] + C[0] * smithNum[level - 1];
+                            min = min < temp ? min : temp;
                             return min;
                         }
                         else {
@@ -828,7 +845,10 @@ class Estimate {
                         }
                     }
                     else if (level == 14) {
-                        return A[3] + C[3] * 2;
+                        let min = A[3] + C[3] * 2;
+                        let temp = A[3] + C[0] * smithNum[level - 1];
+                        min = min < temp ? min : temp;
+                        return min;
                     }
                     else {
                         console.log("has wrong kind in mmOnce");
@@ -863,8 +883,12 @@ class Estimate {
                                 return C[2];
                         }
                         else if (level == 13) {
-                            let min = C[2];
-                            min = min < B[3] + C[3] ? min : B[3] + C[3];
+                            let min = C[1];
+                            let temp;
+                            temp = B[3] + C[3];
+                            min = min < temp ? min : temp;
+                            temp = B[3] + C[0] * smithNum[level - 1];
+                            min = min < temp ? min : temp;
                             return min;
                         }
                         else {
@@ -873,7 +897,10 @@ class Estimate {
                         }
                     }
                     else if (level == 14) {
-                        return B[3] + C[3] * 2;
+                        let min = B[3] + C[3] * 2;
+                        let temp = B[3] + C[0] * smithNum[level - 1];
+                        min = min < temp ? min : temp;
+                        return min;
                     }
                     else {
                         console.log("has wrong kind in mmOnce");
@@ -928,20 +955,45 @@ class Estimate {
                             }
                         }
                         else if (level == 13) {
-                            if (C[1] < A[3] + C[3]) {
+                            let temp = [];
+                            temp.push(C[1]);
+                            temp.push(A[3] + C[3]);
+                            temp.push(A[3] + C[0] * smithNum[level - 1]);
+                            let min_index=temp.indexOf(Math.min(...temp));
+                            if(min_index==0){
                                 re.nBless[1]++;
                                 break;
-                            } else if (C[1] >= A[3] + C[3]) {
+                            }else if(min_index==1){
                                 re.nMaterial[3]++;
                                 re.nBless[2]++;
+                                break;
+                            }else if(min_index==2){
+                                re.nMaterial[3]++;
+                                re.nBless[0] += smithNum[level - 1];
+                                break;
+                            }else{
+                                console.log("should not happen in mmOnceExtend");
                                 break;
                             }
                         }
                     }
                     else if (level == 14) {
-                        re.nMaterial[3]++;
-                        re.nBless[2] += 2;
-                        break;
+                        let temp = [];
+                        temp.push(A[3] + C[3] * 2);
+                        temp.push(A[3] + C[0] * smithNum[level - 1]);
+                        let min_index=temp.indexOf(Math.min(...temp));
+                        if(min_index==0){
+                            re.nMaterial[3]++;
+                            re.nBless[2]+=2;
+                            break;
+                        }else if(min_index==1){
+                            re.nMaterial[3]++;
+                            re.nBless[0] += smithNum[level - 1];
+                            break;
+                        }else{
+                            console.log("should not happen in mmOnce");
+                            break;
+                        }
                     }
                     else {
                         console.log("has wrong kind in mmOnceExtend");
@@ -989,20 +1041,45 @@ class Estimate {
                             }
                         }
                         else if (level == 13) {
-                            if (C[2] < B[3] + C[3]) {
+                            let temp = [];
+                            temp.push(C[1]);
+                            temp.push(B[3] + C[3]);
+                            temp.push(B[3] + C[0] * smithNum[level - 1]);
+                            let min_index=temp.indexOf(Math.min(...temp));
+                            if(min_index==0){
                                 re.nBless[1]++;
                                 break;
-                            } else if (C[2] >= B[3] + C[3]) {
+                            }else if(min_index==1){
                                 re.nMaterial[3]++;
                                 re.nBless[2]++;
+                                break;
+                            }else if(min_index==2){
+                                re.nMaterial[3]++;
+                                re.nBless[0] += smithNum[level - 1];
+                                break;
+                            }else{
+                                console.log("should not happen in mmOnceExtend");
                                 break;
                             }
                         }
                     }
                     else if (level == 14) {
-                        re.nMaterial[3]++;
-                        re.nBless[2] += 2;
-                        break;
+                        let temp = [];
+                        temp.push(B[3] + C[3] * 2);
+                        temp.push(B[3] + C[0] * smithNum[level - 1]);
+                        let min_index=temp.indexOf(Math.min(...temp));
+                        if(min_index==0){
+                            re.nMaterial[3]++;
+                            re.nBless[2]+=2;
+                            break;
+                        }else if(min_index==1){
+                            re.nMaterial[3]++;
+                            re.nBless[0] += smithNum[level - 1];
+                            break;
+                        }else{
+                            console.log("should not happen in mmOnce");
+                            break;
+                        }
                     }
                     else {
                         cout << "has wrong kind in mmOnceExtend" << endl;
