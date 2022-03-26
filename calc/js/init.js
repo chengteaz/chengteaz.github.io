@@ -207,6 +207,8 @@ var compares = {};
     testHoverInit3();
     testNameEditableInit();
     conservationCalcFunctionInit();
+
+    new_compare();
 })();
 // function materialInfoDropInit(){
 //     var container = document.getElementById("material");

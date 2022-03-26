@@ -475,6 +475,7 @@ class Estimate {
                 for (let i = 0; i < s.length; i++) {
                     let buf = s[i];
                     let temp = this.operate(this.price, kind, this.level_start + 1, buf);
+                    // console.log(`step = ${step} => ${buf}, fee=${temp}`);
                     if (temp < min) {
                         min = temp;
                         fix = s[i];
