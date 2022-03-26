@@ -430,8 +430,8 @@ class Estimate {
             } else {
                 if (temp.step.indexOf("[") >= 0) {
                     let step;
-                    step = temp.step.substr(temp.step, temp.step.indexOf("["));
-                    step += temp.step.substr(temp.step.indexOf("]") + 1);
+                    step = temp.step.substr(0, temp.step.indexOf("["));
+                    step += temp.step.substr(temp.step.lastIndexOf("]") + 1);
 
                     this.addTest(step, temp.once);
                 } else {
@@ -464,6 +464,7 @@ class Estimate {
 
             // if (step[process] == 'X') {
             if ((step[process] == 'X' && this.sort != "A5" && this.sort != "B2") || (step[process] == 'Y' && (this.sort == "A5" || this.sort == "B2") && this.level_start != 0)) {
+                let kind = step[process];
                 let fix = step;
                 let s = this.preProcessForSpecificConditionX(fix, step.lastIndexOf(this.decimalToHexChar(this.level_start + 1)));
 
@@ -473,7 +474,7 @@ class Estimate {
                 let min = Number.MAX_VALUE;
                 for (let i = 0; i < s.length; i++) {
                     let buf = s[i];
-                    let temp = this.operate(this.price, 'X', this.level_start + 1, buf);
+                    let temp = this.operate(this.price, kind, this.level_start + 1, buf);
                     if (temp < min) {
                         min = temp;
                         fix = s[i];
@@ -589,7 +590,7 @@ class Estimate {
         if (this.sort == "SA" || this.sort == "SB") {
             kind.pop();
         } else if (this.sort == "A5" || this.sort == "B2") {
-            kind = ['Y'];
+            kind = ['Y', 'P'];
         }
 
         let front, temp;
@@ -603,7 +604,10 @@ class Estimate {
                     continue;
                 } else if ((kind[i] == 'N' || kind[i] == 'H') && (level - 1) > 10) {
                     continue;
+                } else if (kind[i] == 'P' && (level - 1) <= 7 && (this.sort == "A5" || this.sort == "B2")) {
+                    continue;
                 }
+
                 temp = `${front}[${kind[i]}${this.decimalToHexChar(level - 1)}]${step.substr(hstep)}`;
                 //printf("in: %s[%c%c]%s\n",front,kind[i],decimalToHexChar(level-1),hstep);
                 re.push(temp);
@@ -615,7 +619,6 @@ class Estimate {
                 let get = this.preProcessForSpecificConditionX(temp, hstep + 1, true);
                 re = re.concat(get);
             } else if (kind[i] == 'Y' && (level - 1) >= 1) {
-                temp = `${front}[${kind[i]}${this.decimalToHexChar(level - 1)}]${step.substr(hstep)}`;
                 //printf("in: %s[%c%c]%s\n",front,kind[i],decimalToHexChar(level-1),hstep);
 
                 //cout<<"in2: "<<&temp[hstep-step]<<endl;
@@ -623,6 +626,7 @@ class Estimate {
                     temp = `${front}[${kind[i]}${this.decimalToHexChar(level - 1)}]${step.substr(hstep)}`;
                     re.push(temp);
                 } else if (level - 1 >= 2) {
+                    temp = `${front}[${kind[i]}${this.decimalToHexChar(level - 1)}]${step.substr(hstep)}`;
                     let get = this.preProcessForSpecificConditionX(temp, hstep + 1, true);
                     re = re.concat(get);
                 }
