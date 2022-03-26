@@ -147,7 +147,10 @@ class Compare_UI {
                         temp2.classList.add("hidden");
                         temp2.onclick = MouseOperation.log_test;
                         temp.appendChild(temp2);
-
+                        temp2 = document.createElement("div");
+                        temp2.classList.add("hidden");
+                        temp2.onclick = MouseOperation.show_rate;
+                        temp.appendChild(temp2);
                     }
                     row.appendChild(temp);
                 }
@@ -163,6 +166,7 @@ class Compare_UI {
                 test_result_block.querySelector(".test_name_row").children[i].children[1].textContent = "\u2716";
                 test_result_block.querySelector(".test_name_row").children[i].children[2].textContent = "\u27f3";
                 test_result_block.querySelector(".test_name_row").children[i].children[3].textContent = "\u24d8";
+                test_result_block.querySelector(".test_name_row").children[i].children[4].textContent = "\u00AE";
                 test_result_block.querySelector(".item_kind_row").children[i].textContent = test.estimate.sort;
                 test_result_block.querySelector(".test_step_row").children[i].textContent = test.estimate.head[0].step;
                 for (let k = 0; k < test.results.length; k++) {
@@ -218,6 +222,13 @@ class MouseOperation {
         let compare_instance = compares[compare.rand];
         compare_instance.refreshTest(test_index);
         compare_instance.tests[test_index].estimate.showMaterial(compare_instance.tests[test_index].estimate.head[0].step);
+    }
+    static show_rate = function (ev) {
+        let compare = ev.target.closest(".compare");
+        let test_index = $(compare.querySelectorAll(".test_name_row > div:not(:first-child)")).index(ev.target.parentElement);
+        let compare_instance = compares[compare.rand];
+        compare_instance.refreshTest(test_index);
+        compare_instance.tests[test_index].estimate.showRate(compare_instance.tests[test_index].estimate.head[0].step);
     }
     static remove_test = function (ev) {
         let compare = ev.target.closest(".compare");

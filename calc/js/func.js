@@ -90,10 +90,10 @@ function upload(files, target) {
         if (data.dataType == "material") {
             if (target.id == "material" || target.id == "composite") {
                 // when use old export pageinfo, set initial value for yther & zther.
-                data.A[4]=data.A[4]==undefined?0:data.A[4];
-                data.A[5]=data.A[5]==undefined?0:data.A[5];
-                data.B[4]=data.B[4]==undefined?0:data.B[4];
-                data.B[5]=data.B[5]==undefined?0:data.B[5];
+                for(let i=4;i<=7;i++){
+                    data.A[i]=data.A[i]==undefined?0:data.A[i];
+                    data.B[i]=data.B[i]==undefined?0:data.B[i];
+                }
 
                 A = data.A;
                 B = data.B;
@@ -182,7 +182,7 @@ function export_page() {
     download(filename, content);
 }
 
-function input_calc(string) {
+function input_calc(string, not_alert) {
     // console.log(string);
     if (string != "" && /^[0-9+\-/*.()]*$/g.test(string) == true) {   // .test(null) result "false"
         try {
@@ -198,7 +198,7 @@ function input_calc(string) {
         }
     } else {
         if (string != null && string != "") {
-            alert("invalid input");
+            not_alert?0:alert("invalid input");
             throw `invalid input => skip`;
         } else if (string == "") {
             throw `empty input => skip`;
@@ -218,11 +218,16 @@ function p_point_set() {
         if (isNaN(p) == false) {
             back_up();
             apply_material_data({ value: "middle operation" }, true);
-            A[1] = Math.round(5.5 * p * 100) / 100;
-            A[2] = Math.round(7 * p * 100) / 100;
-            B[1] = Math.round(6 * p * 100) / 100;
-            B[2] = Math.round(7 * p * 100) / 100;
-            C[0] = Math.round(29 * p * 100) / 100;
+            // A[1] = Math.round(5.5 * p * 100) / 100;
+            // A[2] = Math.round(7 * p * 100) / 100;
+            // B[1] = Math.round(6 * p * 100) / 100;
+            // B[2] = Math.round(7 * p * 100) / 100;
+            // C[0] = Math.round(29 * p * 100) / 100;
+            A[1] = `5.5*${p}`;
+            A[2] = `7*${p}`;
+            B[1] = `6*${p}`;
+            B[2] = `7*${p}`;
+            C[0] = `29*${p}`;
             fill_material_data(undefined, true);
             recover();
         }
@@ -231,7 +236,34 @@ function p_point_set() {
         alert("setting fails");
     }
 }
+function yther_set(){
+    // alert("yther_set");
+    try {
+        let p = input_calc(prompt("yther_set, input dust price:"));
+        console.log(p);
+        if (isNaN(p) == false) {
+            back_up();
+            apply_material_data({ value: "middle operation" }, true);
+            try{
+                let zeny=[1,2,5,5];
+                let dust=[1,2,3,3];
 
+                for(let i=0;i<4;i++){
+                    A[i+4]=`${input_calc(A[i], true)}+${dust[i]}*${p}+${zeny[i]}`;
+                    B[i+4]=`${input_calc(B[i], true)}+${dust[i]}*${p}+${zeny[i]}`;
+                }
+                fill_material_data(undefined, true);
+            }catch(err){
+                console.log("exist invalid reference source, in yther_set.");
+                alert("setting fails, exist invalid reference source..")
+            }
+            recover();
+        }
+    } catch (err) {
+        console.log(err);
+        alert("setting fails");
+    }
+}
 function clear_material_data(ev) {
     // alert("clear_material_data");
     var values = document.querySelectorAll(".material_list .value");
@@ -413,6 +445,7 @@ function apply_material_data(ev, not_checking) {
     } else {
         fill_material_data(undefined, true);
     }
+    
 }
 
 function refresh_all(ev) {
@@ -540,8 +573,8 @@ function new_compare(insertAtIndex) {
     text.classList.add("text");
     text.textContent = "item kind";
     temp.appendChild(text);
-    var kind = ["A3", "A4", "B", "SA", "SB"];
-    // var kind = ["A3", "A4", "B", "SA", "SB", "A5", "B2"];
+    // var kind = ["A3", "A4", "B", "SA", "SB"];
+    var kind = ["A3", "A4", "B", "SA", "SB", "A5", "B2"];
     for (var k of kind) {
         var grid = document.createElement("label");
         grid.classList.add("grid");
@@ -1061,10 +1094,17 @@ function openTab(tab_link) {
 
 // log rate table accroding sort(A3, A4, B, SA, SB)
 function get_rate(sort){
-    let print="level".alignLeft(10) + ["","N", "H", "X", "P", "T"].join(" ".repeat(5));
+    let print;
+    let kinds;
+    if(sort=="A5"||sort=="B2"){
+        print="level".alignLeft(10) + ["","Y", "Z", "P"].join(" ".repeat(5));
+        kinds=["Y", "Z", "P"];
+    }else{
+        print="level".alignLeft(10) + ["","N", "H", "X", "P", "T"].join(" ".repeat(5));
+        kinds=["N", "H", "X", "P", "T"];
+    }
     console.log(print);
-    for(let i=0;i<=21;i++){
-        let kinds=["N", "H", "X", "P", "T"];
+    for(let i=1;i<=20;i++){
         let print="";
         let level=`+${i}`.alignLeft(10);
         print+=level;

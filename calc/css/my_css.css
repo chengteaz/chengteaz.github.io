@@ -60,7 +60,7 @@
 
 .material_list>.material_item>.text {
     display: inline-block;
-    width: 80px;
+    width: 90px;
 }
 
 .material_list>.material_item>.value {
@@ -255,6 +255,10 @@
     border-left: 1px solid black;
 }
 
+.test_step_row>*+* {
+    overflow-wrap: break-word;
+}
+
 .test_result * {
     flex-shrink: 0;
     width: fit-content;
@@ -390,6 +394,14 @@ input:checked+.step.grid {
     font-weight: bold;
     top: 1.4px;
     font-size: 90%;
+}
+
+.test_name_row>div>div:nth-child(5) {
+    right: calc(15px*3.4);
+    font-weight: bold;
+    top: -3px;
+    font-size: 140%;
+    overflow: visible;
 }
 
 .test_name_row>div>div:not(:first-child):hover {

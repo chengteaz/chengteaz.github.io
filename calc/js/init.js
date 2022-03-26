@@ -66,6 +66,12 @@ var compares = {};
 
     var temp = document.createElement("input");
     temp.type = "button";
+    temp.value = "y+";
+    temp.setAttribute("onclick", "yther_set()");
+    title_div.appendChild(temp);
+
+    var temp = document.createElement("input");
+    temp.type = "button";
     temp.value = "clear";
     temp.setAttribute("onclick", "clear_material_data(this)");
     title_div.appendChild(temp);
