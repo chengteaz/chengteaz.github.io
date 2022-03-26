@@ -706,7 +706,7 @@ class Estimate {
 
                     tempT.onceRate[level] = this.mpOnce(kind, level);
                     tempT.oneToEndRate[level] = this.mpOneEnd(kind, level, tempT.step);
-                    tempT.accRate[level] = tempT.accRate[level - 1] * (tempT.oneToEndRate[level] / 100);
+                    tempT.accRate[level] = tempT.accRate[kind == 'T' ? level_start : level - 1] * (tempT.oneToEndRate[level] / 100);
                     tempT.onceMFee[level] = this.mmOnce(kind, level);
                     tempT.oneToEndMFee[level] = this.mmOneEnd(kind, level, tempT.step);
                     tempT.expectedMFee[level] = this.mmOneEnd(kind, level, tempT.step) / (this.mpOneEnd(kind, level, tempT.step) / 100);
