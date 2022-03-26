@@ -168,8 +168,8 @@ var p_point_rate = 30;
 var t_rate = 35;
 // var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200];        // weapon    upgrade fee
 // var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200];      // equipment upgrade fee
-var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200, 10, 30, 300, 300];        // weapon    upgrade fee
-var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200, 10, 30, 300, 300];      // equipment upgrade fee
+var A = [5.12222, p_point_rate * 5.5, p_point_rate * 6.9, 200, 10, 250, 300, 300];        // weapon    upgrade fee
+var B = [9, p_point_rate * 6, p_point_rate * 6.9, 200, 10, 250, 300, 300];      // equipment upgrade fee
 var C = [p_point_rate * 29, 3000, t_rate * 115, t_rate * 300];  // smith,weapon,equipment,god blessing fee
 
 var TA = [, , , , , 1500, 17000, 17000, 19000, , , , , ,];   //+5~+9 weapon    ticket fee (T icket) 
