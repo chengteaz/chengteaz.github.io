@@ -139,8 +139,8 @@ class pair {
 
 // var material_listA = ["大神", "濃縮神*", "高濃縮神*", "鈽鐳"];
 // var material_listB = ["大鋁", "濃縮鋁*", "高濃縮鋁*", "鈣"];
-var material_listA = ["大神", "濃縮神*", "高濃縮神*", "鈽鐳", "乙神+", "濃縮乙神+", "高濃縮乙神+", "高密度乙神+"];
-var material_listB = ["大鋁", "濃縮鋁*", "高濃縮鋁*", "鈣", "乙鋁+", "濃縮乙鋁+", "高濃縮乙鋁+", "高密度乙鋁+"];
+var material_listA = ["大神", "濃縮神*", "高濃縮神*", "高密度鈽鐳", "乙神+", "濃縮乙神+", "高濃縮乙神+", "高密度乙神+"];
+var material_listB = ["大鋁", "濃縮鋁*", "高濃縮鋁*", "高密度鈣", "乙鋁+", "濃縮乙鋁+", "高濃縮乙鋁+", "高密度乙鋁+"];
 var material_listC = ["鐵祝*", "祝武", "祝防", "神乎"];
 var material_listTA = ["+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14"];   //+5~+9 weapon    ticket fee (T icket) 
 var material_listTB = ["+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14"]; //+5~+9 equipment ticket fee 
@@ -208,7 +208,7 @@ var RB2 = [[100, 100, 100, 60, 60, 40, 40, 20, 20, 9, 8, 8, 8, 8, 7, 7, 7, 7, 5,
 [100, 100, 100, 90, 70, 60, 60, 40, 40, 20, 15, 15, 15, 15, 10, 10, 10, 10, 7, 7]];  //(H igh)
 
 //  equipment LV.2 activity duration (same as RA5 activity duration)
-var RA5_up = [[100, 100, 100, 80, 80, 60, 60, 40, 40, 18, 16, 16, 16, 16, 14, 14, 14, 14, 10, 10],//(N ormal)
+var RB2_up = [[100, 100, 100, 80, 80, 60, 60, 40, 40, 18, 16, 16, 16, 16, 14, 14, 14, 14, 10, 10],//(N ormal)
 [100, 100, 100, 95, 85, 70, 65, 55, 45, 25, 20, 20, 20, 20, 15, 15, 15, 15, 10, 10]];  //(H igh)
 
 
@@ -706,7 +706,7 @@ class Estimate {
 
                     tempT.onceRate[level] = this.mpOnce(kind, level);
                     tempT.oneToEndRate[level] = this.mpOneEnd(kind, level, tempT.step);
-                    tempT.accRate[level] = tempT.accRate[level-1]*(tempT.oneToEndRate[level]/100);
+                    tempT.accRate[level] = tempT.accRate[level - 1] * (tempT.oneToEndRate[level] / 100);
                     tempT.onceMFee[level] = this.mmOnce(kind, level);
                     tempT.oneToEndMFee[level] = this.mmOneEnd(kind, level, tempT.step);
                     tempT.expectedMFee[level] = this.mmOneEnd(kind, level, tempT.step) / (this.mpOneEnd(kind, level, tempT.step) / 100);
@@ -1969,7 +1969,7 @@ class Estimate {
         title[MaterialInfo.Normal] = ["A3", "A4", "SA"].indexOf(this.sort) >= 0 ? "大神" : "大鋁";
         title[MaterialInfo.High] = ["A3", "A4", "SA"].indexOf(this.sort) >= 0 ? "濃縮神" : "濃縮鋁";
         title[MaterialInfo.Xtra] = ["A3", "A4", "SA"].indexOf(this.sort) >= 0 ? "高濃縮神" : "高濃縮鋁";
-        title[MaterialInfo.XtraHigh] = ["A3", "A4", "SA"].indexOf(this.sort) >= 0 ? "鈽鐳" : "鈣";
+        title[MaterialInfo.XtraHigh] = ["A3", "A4", "SA"].indexOf(this.sort) >= 0 ? "高密鈽鐳" : "高密鈣";
         title[MaterialInfo.Normal_Y] = ["A5"].indexOf(this.sort) >= 0 ? "乙神" : "乙鋁";
         title[MaterialInfo.High_Y] = ["A5"].indexOf(this.sort) >= 0 ? "濃縮乙神" : "濃縮乙鋁";
         title[MaterialInfo.Xtra_Y] = ["A5"].indexOf(this.sort) >= 0 ? "高濃乙神" : "高濃乙鋁";
@@ -2055,7 +2055,7 @@ class Estimate {
         console.log(".".repeat(30));
     }
 
-    showRate(step){
+    showRate(step) {
         if (this.itemName != undefined)
             console.log(`${"item name".alignLeft(12)}${this.itemName.alignRight(12)}`);
         console.log(`${"sort".alignLeft(12)}${this.sort.alignRight(12)}`);
@@ -2073,15 +2073,15 @@ class Estimate {
         this.calc();
 
         let temp = this.head[this.head.length - 1];
-        
-        let list=[]
+
+        let list = []
         list.push(ShowInfo.OnceRate);
         list.push(ShowInfo.OneToEndRate);
         list.push(ShowInfo.AccRate);
 
-        let list_part=["Once Rate", "O-E Rate", "Acc Rate", "ITEM"];
+        let list_part = ["Once Rate", "O-E Rate", "Acc Rate", "ITEM"];
 
-        let print_content="";
+        let print_content = "";
         print_content += `${"".alignLeft(9)} `;
         for (let li = 0; li < list_part.length; li++) {
             let temp = list_part[li];
@@ -2096,7 +2096,7 @@ class Estimate {
         console.log(print_content);
         console.log();
 
-        let basic=[];
+        let basic = [];
 
         for (let i = 0; i <= temp.level_end; i++) {
             print_content = `level ${i}`.alignLeft(9) + " ";
